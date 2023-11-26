@@ -1,19 +1,15 @@
 import * as THREE from "three";
 import { Boid } from "./Boid";
 import { Scene } from "./Scene";
+import { config } from "./config";
 
 // Create a scene
 const scene: Scene = new Scene();
 // Create an array to store boids
 const boids: Boid[] = [];
 
-const separationFactor: number = 0.005;
-const alignmentFactor: number = 0.002;
-const cohesionFactor: number = 0.003;
-
 // Create a flock of boids
-const numBoids: number = 300;
-for (let i = 0; i < numBoids; i++) {
+for (let i = 0; i < config.numBoids; i++) {
   const x: number = Math.random() * 2 - 1;
   const y: number = Math.random() * 2 - 1;
   const z: number = Math.random() * 2 - 1;
@@ -80,20 +76,20 @@ function animate(): void {
     if (separationCount > 0) {
       separationForce.divideScalar(separationCount);
       separationForce.normalize();
-      separationForce.multiplyScalar(separationFactor); // Adjust separation strength
+      separationForce.multiplyScalar(config.separationFactor); // Adjust separation strength
     }
 
     if (alignmentCount > 0) {
       alignmentForce.divideScalar(alignmentCount);
       alignmentForce.normalize();
-      alignmentForce.multiplyScalar(alignmentFactor); // Adjust alignment strength
+      alignmentForce.multiplyScalar(config.alignmentFactor); // Adjust alignment strength
     }
 
     if (cohesionCount > 0) {
       cohesionForce.divideScalar(cohesionCount);
       cohesionForce.sub(boid.position);
       cohesionForce.normalize();
-      cohesionForce.multiplyScalar(cohesionFactor); // Adjust cohesion strength
+      cohesionForce.multiplyScalar(config.cohesionFactor); // Adjust cohesion strength
     }
 
     // Update boid's velocity based on forces

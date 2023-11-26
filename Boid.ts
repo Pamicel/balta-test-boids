@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { config } from "./config";
 
 // Boid class
 export class Boid {
@@ -42,7 +43,7 @@ export class Boid {
     }
     this.position.add(this.velocity);
 
-    const boxSize: number = 3;
+    const { boxSize } = config;
     // jump to the other side of the scene when boid reaches the edge
     if (this.position.x > boxSize) {
       this.position.x = -boxSize;
