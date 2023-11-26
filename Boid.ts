@@ -6,6 +6,7 @@ export class Boid {
   public position: THREE.Vector3;
   public velocity: THREE.Vector3;
   private line: THREE.Line;
+  private scene: THREE.Scene;
 
   constructor(x: number, y: number, z: number, scene: THREE.Scene) {
     this.velocity = new THREE.Vector3(x, y, z);
@@ -23,6 +24,11 @@ export class Boid {
     this.line = new THREE.Line(boidGeometry, boidMaterial);
     this.position = this.line.position;
     scene.add(this.line);
+    this.scene = scene;
+  }
+
+  public remove(): void {
+    this.scene.remove(this.line);
   }
 
   // Update the boid's geometry to align with its heading

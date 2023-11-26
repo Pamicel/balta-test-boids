@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export class Scene {
+export class Stage {
   public scene: THREE.Scene;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;

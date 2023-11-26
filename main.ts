@@ -1,28 +1,22 @@
 import * as THREE from "three";
-import { Boid } from "./Boid";
-import { Scene } from "./Scene";
+import { Stage } from "./Stage";
 import { config } from "./config";
+import { Flock } from "./Flock";
 
-// Create a scene
-const scene: Scene = new Scene();
-// Create an array to store boids
-const boids: Boid[] = [];
+// Create the scene
+const stage: Stage = new Stage();
+// Create the flock
+const flock: Flock = new Flock();
 
-// Create a flock of boids
-for (let i = 0; i < config.numBoids; i++) {
-  const x: number = Math.random() * 2 - 1;
-  const y: number = Math.random() * 2 - 1;
-  const z: number = Math.random() * 2 - 1;
-  const boid: Boid = new Boid(x, y, z, scene.scene);
-  boids.push(boid);
-}
+// Add boids to the flock
+flock.addBoids(config.numBoids, stage.scene);
 
 // Animation function
 function animate(): void {
   requestAnimationFrame(animate);
 
   // Implement Reynolds' Boid algorithm behaviors
-  for (const boid of boids) {
+  for (const boid of flock.boids) {
     const separationRadius: number = 0.1;
     const alignmentRadius: number = 0.2;
     const cohesionRadius: number = 0.2;
@@ -33,7 +27,7 @@ function animate(): void {
     let alignmentCount: number = 0;
     let cohesionCount: number = 0;
 
-    for (const otherBoid of boids) {
+    for (const otherBoid of flock.boids) {
       if (otherBoid !== boid) {
         const distance: number = boid.position.distanceTo(otherBoid.position);
 
@@ -100,8 +94,32 @@ function animate(): void {
     boid.update();
   }
 
-  scene.render();
+  stage.render();
 }
+
+// Keypress event listener
+document.addEventListener("keydown", (event: KeyboardEvent) => {
+  console.log(event.key);
+  switch (event.key) {
+    case "ArrowUp":
+      config.numBoids += 10;
+      flock.addBoids(10, stage.scene);
+      break;
+    case "ArrowDown":
+      config.numBoids -= 10;
+      flock.removeBoids(10);
+      break;
+    case "ArrowLeft":
+      config.boxSize -= 1;
+      break;
+    case "ArrowRight":
+      config.boxSize += 1;
+      break;
+    default:
+      break;
+  }
+  console.log(JSON.stringify(config, null, 2));
+});
 
 // Start the animation loop
 animate();
