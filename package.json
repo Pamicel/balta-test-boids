@@ -5,6 +5,7 @@
   "author": "pamicel",
   "license": "MIT",
   "dependencies": {
+    "@types/three": "^0.158.3",
     "three": "^0.158.0"
   },
   "devDependencies": {
