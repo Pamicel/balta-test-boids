@@ -18,7 +18,7 @@ export class Boid {
     boidGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     boidGeometry.computeVertexNormals();
     // Create a white line material
-    const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 16777215 });
+    const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     this.line = new THREE.Line(boidGeometry, boidMaterial);
     this.position = this.line.position;
     scene.add(this.line);
