@@ -17,9 +17,6 @@ function animate(): void {
 
   // Implement Reynolds' Boid algorithm behaviors
   for (const boid of flock.boids) {
-    const separationRadius: number = 0.1;
-    const alignmentRadius: number = 0.2;
-    const cohesionRadius: number = 0.2;
     const separationForce: THREE.Vector3 = new THREE.Vector3();
     const alignmentForce: THREE.Vector3 = new THREE.Vector3();
     const cohesionForce: THREE.Vector3 = new THREE.Vector3();
@@ -32,7 +29,7 @@ function animate(): void {
         const distance: number = boid.position.distanceTo(otherBoid.position);
 
         // Separation
-        if (distance < separationRadius) {
+        if (distance < config.separationRadius) {
           // if distance is zero. push the boid in a random direction
           if (distance !== 0) {
             const diff: THREE.Vector3 = new THREE.Vector3().subVectors(
@@ -53,13 +50,13 @@ function animate(): void {
         }
 
         // Alignment
-        if (distance < alignmentRadius) {
+        if (distance < config.alignmentRadius) {
           alignmentForce.add(otherBoid.velocity);
           alignmentCount++;
         }
 
         // Cohesion
-        if (distance < cohesionRadius) {
+        if (distance < config.cohesionRadius) {
           cohesionForce.add(otherBoid.position);
           cohesionCount++;
         }
