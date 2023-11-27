@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Stage } from "./Stage";
-import { config } from "./config";
+import { settings, settingsManager } from "./config";
 import { Flock } from "./Flock";
 
 // Create the scene
@@ -9,7 +9,7 @@ const stage: Stage = new Stage();
 const flock: Flock = new Flock();
 
 // Add boids to the flock
-flock.addBoids(config.numBoids, stage.scene);
+flock.addBoids(settings.numBoids, stage.scene);
 
 // Animation function
 function animate(): void {
@@ -29,7 +29,7 @@ function animate(): void {
         const distance: number = boid.position.distanceTo(otherBoid.position);
 
         // Separation
-        if (distance < config.separationRadius) {
+        if (distance < settings.separationRadius) {
           // if distance is zero. push the boid in a random direction
           if (distance !== 0) {
             const diff: THREE.Vector3 = new THREE.Vector3().subVectors(
@@ -50,13 +50,13 @@ function animate(): void {
         }
 
         // Alignment
-        if (distance < config.alignmentRadius) {
+        if (distance < settings.alignmentRadius) {
           alignmentForce.add(otherBoid.velocity);
           alignmentCount++;
         }
 
         // Cohesion
-        if (distance < config.cohesionRadius) {
+        if (distance < settings.cohesionRadius) {
           cohesionForce.add(otherBoid.position);
           cohesionCount++;
         }
@@ -67,20 +67,20 @@ function animate(): void {
     if (separationCount > 0) {
       separationForce.divideScalar(separationCount);
       separationForce.normalize();
-      separationForce.multiplyScalar(config.separationFactor); // Adjust separation strength
+      separationForce.multiplyScalar(settings.separationFactor); // Adjust separation strength
     }
 
     if (alignmentCount > 0) {
       alignmentForce.divideScalar(alignmentCount);
       alignmentForce.normalize();
-      alignmentForce.multiplyScalar(config.alignmentFactor); // Adjust alignment strength
+      alignmentForce.multiplyScalar(settings.alignmentFactor); // Adjust alignment strength
     }
 
     if (cohesionCount > 0) {
       cohesionForce.divideScalar(cohesionCount);
       cohesionForce.sub(boid.position);
       cohesionForce.normalize();
-      cohesionForce.multiplyScalar(config.cohesionFactor); // Adjust cohesion strength
+      cohesionForce.multiplyScalar(settings.cohesionFactor); // Adjust cohesion strength
     }
 
     // Update boid's velocity based on forces
@@ -99,23 +99,28 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
   console.log(event.key);
   switch (event.key) {
     case "ArrowUp":
-      config.numBoids += 10;
+      settings.numBoids += 10;
       flock.addBoids(10, stage.scene);
       break;
     case "ArrowDown":
-      config.numBoids -= 10;
+      settings.numBoids -= 10;
       flock.removeBoids(10);
       break;
     case "ArrowLeft":
-      config.boxSize -= 1;
+      settings.boxSize -= 1;
       break;
     case "ArrowRight":
-      config.boxSize += 1;
+      settings.boxSize += 1;
+      break;
+
+    case "a":
+    case "s":
+      settingsManager.setMode(event.key);
       break;
     default:
       break;
   }
-  console.log(JSON.stringify(config, null, 2));
+  console.log(JSON.stringify(settings, null, 2));
 });
 
 // Start the animation loop

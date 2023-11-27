@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { config } from "./config";
+import { settings } from "./config";
 
 // Boid class
 export class Boid {
@@ -44,12 +44,12 @@ export class Boid {
   // Update the boid's position
   public update(): void {
     // limit velocity to 0.1
-    if (this.velocity.length() > 0.01) {
-      this.velocity.normalize().multiplyScalar(0.01);
+    if (this.velocity.length() > settings.maxVelicity) {
+      this.velocity.normalize().multiplyScalar(settings.maxVelicity);
     }
     this.position.add(this.velocity);
 
-    const { boxSize } = config;
+    const { boxSize } = settings;
     // jump to the other side of the scene when boid reaches the edge
     if (this.position.x > boxSize) {
       this.position.x = -boxSize;
