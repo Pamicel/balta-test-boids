@@ -58,16 +58,16 @@ class SettingsManager {
 
   private modeA () {
     // increase cohesion radius
-    this.currentSettings.cohesionRadius *= 10;
+    this.currentSettings.cohesionRadius = this.default.cohesionRadius * 10;
   }
 
   public modeS () {
     // increase separation factor
-    this.currentSettings.separationFactor *= 10;
+    this.currentSettings.alignmentFactor = this.default.alignmentFactor * 1.2;
     // increase separation radius
-    this.currentSettings.separationRadius *= 10;
+    this.currentSettings.separationRadius = this.default.separationRadius * 1.2;
     // Make boids slower
-    this.currentSettings.maxVelicity *= .1;
+    this.currentSettings.maxVelicity = this.default.maxVelicity / 2;
   }
 }
 
