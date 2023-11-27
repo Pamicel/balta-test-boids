@@ -7,10 +7,14 @@ type Config = {
   cohesionRadius: number,
   numBoids: number,
   boxSize: number,
+  boxMode: BoxMode,
+  boxShape: BoxShape,
   maxVelicity: number,
 }
 
 type Mode = "a" | "s";
+export type BoxMode = "wrap" | "bounce";
+export type BoxShape = "sphere" | "cube";
 
 class SettingsManager {
   private default: Config = {
@@ -20,8 +24,10 @@ class SettingsManager {
     separationRadius: 0.1,
     alignmentRadius: 0.2,
     cohesionRadius: 0.2,
-    numBoids: 300,
+    numBoids: 500,
     boxSize: 3,
+    boxMode: "wrap",
+    boxShape: "sphere",
     maxVelicity: 0.01,
   };
   public currentSettings: Config;
@@ -39,35 +45,55 @@ class SettingsManager {
     this.currentSettings.maxVelicity = this.default.maxVelicity;
   }
 
-  public setMode (mode: Mode) {
+  public setBehaviourMode (mode: Mode) {
     this.reset();
     if (this.currentMode === mode) {
       this.currentMode = null;
+      console.log(`Mode ${mode} unset`)
       return;
     }
     switch (mode) {
       case "a":
-        this.modeA();
+        this.behaviourModeA();
         break;
       case "s":
-        this.modeS();
+        this.behaviourModeS();
         break;
     }
     this.currentMode = mode;
+    console.log(`Mode ${mode} set`)
   }
 
-  private modeA () {
+  private behaviourModeA () {
     // increase cohesion radius
     this.currentSettings.cohesionRadius = this.default.cohesionRadius * 10;
   }
 
-  public modeS () {
+  public behaviourModeS () {
     // increase separation factor
     this.currentSettings.alignmentFactor = this.default.alignmentFactor * 1.2;
     // increase separation radius
     this.currentSettings.separationRadius = this.default.separationRadius * 1.2;
     // Make boids slower
     this.currentSettings.maxVelicity = this.default.maxVelicity / 2;
+  }
+
+  public switchBoxSize (size: "small" | "large") {
+    const smallBoxSize = 1;
+    const largeBoxSize = 4;
+    if (size === "large") {
+      this.currentSettings.boxSize = largeBoxSize;
+    } else {
+      this.currentSettings.boxSize = smallBoxSize;
+    }
+  }
+
+  public setBoxMode (mode: BoxMode) {
+    this.currentSettings.boxMode = mode;
+  }
+
+  public setBoxShape (shape: BoxShape) {
+    this.currentSettings.boxShape = shape;
   }
 }
 

@@ -19,29 +19,42 @@ function animate(): void {
 
 // Keypress event listener
 document.addEventListener("keydown", (event: KeyboardEvent) => {
-  console.log(event.key);
   switch (event.key) {
     case "ArrowUp":
-      settings.numBoids += 10;
-      flock.addBoids(10, stage.scene);
+      stage.zoomIn();
       break;
     case "ArrowDown":
-      settings.numBoids -= 10;
-      flock.removeBoids(10);
+      stage.zoomOut();
       break;
     case "ArrowLeft":
-      settings.boxSize -= 1;
+      settingsManager.switchBoxSize("small");
       break;
     case "ArrowRight":
-      settings.boxSize += 1;
+      settingsManager.switchBoxSize("large");
       break;
 
     case "a":
     case "s":
-      settingsManager.setMode(event.key);
+      settingsManager.setBehaviourMode(event.key);
       break;
+
+    case "1":
+      settingsManager.setBoxMode("wrap");
+      break;
+    case "2":
+      settingsManager.setBoxMode("bounce");
+      break;
+
+    case "q":
+      settingsManager.setBoxShape("cube");
+      break;
+    case "w":
+      settingsManager.setBoxShape("sphere");
+      break;
+
     default:
       break;
+
   }
   console.log(JSON.stringify(settings, null, 2));
 });

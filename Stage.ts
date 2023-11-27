@@ -24,6 +24,22 @@ export class Stage {
     this.camera.position.z = 5;
   }
 
+  private changeCameraDistance(distance: number): void {
+    this.camera.position.z = distance;
+    // No closer than 1
+    if (this.camera.position.z < 1) {
+      this.camera.position.z = 1;
+    }
+  }
+
+  public zoomIn(): void {
+    this.changeCameraDistance(this.camera.position.z - 1);
+  }
+
+  public zoomOut(): void {
+    this.changeCameraDistance(this.camera.position.z + 1);
+  }
+
   public render(): void {
     this.renderer.render(this.scene, this.camera);
   }

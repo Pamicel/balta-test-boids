@@ -50,22 +50,67 @@ export class Boid {
     this.position.add(this.velocity);
 
     const { boxSize } = settings;
-    // jump to the other side of the scene when boid reaches the edge
-    if (this.position.x > boxSize) {
-      this.position.x = -boxSize;
-    } else if (this.position.x < -boxSize) {
-      this.position.x = boxSize;
+    if (settings.boxShape === "cube" && settings.boxMode === "wrap") {
+      // jump to the other side of the scene when boid reaches the edge
+      if (this.position.x > boxSize) {
+        this.position.x = -boxSize;
+      } else if (this.position.x < -boxSize) {
+        this.position.x = boxSize;
+      }
+      if (this.position.y > boxSize) {
+        this.position.y = -boxSize;
+      } else if (this.position.y < -boxSize) {
+        this.position.y = boxSize;
+      }
+      if (this.position.z > boxSize) {
+        this.position.z = -boxSize;
+      } else if (this.position.z < -boxSize) {
+        this.position.z = boxSize;
+      }
     }
-    if (this.position.y > boxSize) {
-      this.position.y = -boxSize;
-    } else if (this.position.y < -boxSize) {
-      this.position.y = boxSize;
+
+    if (settings.boxShape === "cube" && settings.boxMode === "bounce") {
+      // bounce off when boid reaches the edge
+      if (this.position.x > boxSize) {
+        this.position.x = boxSize;
+        this.velocity.x *= -1;
+      } else if (this.position.x < -boxSize) {
+        this.position.x = -boxSize;
+        this.velocity.x *= -1;
+      }
+      if (this.position.y > boxSize) {
+        this.position.y = boxSize;
+        this.velocity.y *= -1;
+      } else if (this.position.y < -boxSize) {
+        this.position.y = -boxSize;
+        this.velocity.y *= -1;
+      }
+      if (this.position.z > boxSize) {
+        this.position.z = boxSize;
+        this.velocity.z *= -1;
+      } else if (this.position.z < -boxSize) {
+        this.position.z = -boxSize;
+        this.velocity.z *= -1;
+      }
     }
-    if (this.position.z > boxSize) {
-      this.position.z = -boxSize;
-    } else if (this.position.z < -boxSize) {
-      this.position.z = boxSize;
+
+    if (settings.boxShape === "sphere" && settings.boxMode === "bounce") {
+      // bounce off when the boid reaches the edge of the sphere of diameter boxSize
+      const distanceToCenter = this.position.length();
+      if (distanceToCenter > boxSize) {
+        this.position.normalize().multiplyScalar(boxSize);
+        this.velocity.reflect(this.position);
+      }
     }
+
+    if (settings.boxShape === "sphere" && settings.boxMode === "wrap") {
+      // jump to the other side of the sphere when the boid reaches the edge of the sphere of diameter boxSize
+      const distanceToCenter = this.position.length();
+      if (distanceToCenter > boxSize) {
+        this.position.normalize().multiplyScalar(-boxSize);
+      }
+    }
+
     this.updateBoidGeometry();
   }
 }
