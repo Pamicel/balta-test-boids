@@ -12,7 +12,7 @@ type Config = {
   maxVelicity: number,
 }
 
-type Mode = "a" | "s";
+type Mode = "a" | "s" | "d";
 export type BoxMode = "wrap" | "bounce";
 export type BoxShape = "sphere" | "cube";
 
@@ -59,6 +59,9 @@ class SettingsManager {
       case "s":
         this.behaviourModeS();
         break;
+      case "d":
+        this.behaviourModeD();
+        break;
     }
     this.currentMode = mode;
     console.log(`Mode ${mode} set`)
@@ -69,13 +72,20 @@ class SettingsManager {
     this.currentSettings.cohesionRadius = this.default.cohesionRadius * 10;
   }
 
-  public behaviourModeS () {
+  private behaviourModeS () {
     // increase separation factor
     this.currentSettings.alignmentFactor = this.default.alignmentFactor * 1.2;
     // increase separation radius
     this.currentSettings.separationRadius = this.default.separationRadius * 1.2;
     // Make boids slower
     this.currentSettings.maxVelicity = this.default.maxVelicity / 2;
+  }
+
+  private behaviourModeD () {
+    // increase separation radius
+    this.currentSettings.separationRadius = this.default.separationRadius * 2;
+    // Make boids slower
+    this.currentSettings.maxVelicity = this.default.maxVelicity * 2;
   }
 
   public switchBoxSize (size: "small" | "large") {

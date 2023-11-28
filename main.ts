@@ -35,6 +35,7 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
 
     case "a":
     case "s":
+    case "d":
       settingsManager.setBehaviourMode(event.key);
       break;
 
