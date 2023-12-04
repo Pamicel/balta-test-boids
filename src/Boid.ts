@@ -5,35 +5,50 @@ import { settings } from "./config";
 export class Boid {
   public position: THREE.Vector3;
   public velocity: THREE.Vector3;
-  private line: THREE.Line;
+  // private line: THREE.Line;
+  private sphere: THREE.Mesh;
   private scene: THREE.Scene;
 
   constructor(x: number, y: number, z: number, scene: THREE.Scene) {
     this.velocity = new THREE.Vector3(x, y, z);
 
-    // Create a custom boid geometry
-    const boidGeometry: THREE.BufferGeometry = new THREE.BufferGeometry();
-    const vertices: Float32Array = new Float32Array([
-      0, 0, 0,
-      0.05, 0, 0, // Vertex 2 (tip of the segment)
-    ]);
-    boidGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    // // Create a custom boid geometry
+    // const boidGeometry: THREE.BufferGeometry = new THREE.BufferGeometry();
+    // const vertices: Float32Array = new Float32Array([
+    //   0, 0, 0,
+    //   0, 0, -0.05, // Vertex 2 (tip of the segment)
+    // ]);
+    // boidGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    // // Create a white line material
+    // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+    // this.line = new THREE.Line(boidGeometry, boidMaterial);
+
+    // const boidGeometry = new THREE.CircleGeometry( 0.02, 6 );
+    // sphere
+    const boidGeometry = new THREE.SphereGeometry( 0.02, 6, 6 );
     boidGeometry.computeVertexNormals();
-    // Create a white line material
-    const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-    this.line = new THREE.Line(boidGeometry, boidMaterial);
-    this.position = this.line.position;
-    scene.add(this.line);
+    const boidMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+    this.sphere = new THREE.Mesh( boidGeometry, boidMaterial );
+
+    // this.position = this.line.position;
+    // scene.add(this.line);
+
+    this.position = this.sphere.position;
+    scene.add(this.sphere);
+
     this.scene = scene;
   }
 
   public remove(): void {
-    this.scene.remove(this.line);
+    // this.scene.remove(this.line);
+    this.scene.remove(this.sphere);
   }
 
   // Update the boid's geometry to align with its heading
   private updateBoidGeometry(): void {
-    this.line.lookAt(this.position.clone().add(this.velocity));
+    // this.line.lookAt(this.position.clone().add(this.velocity));
+    // this.circle.lookAt(this.position.clone().add(this.velocity));
+    this.sphere.lookAt(this.position.clone().add(this.velocity));
   }
 
   // Add forces
