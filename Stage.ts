@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { settings } from "./config";
 
 export class Stage {
   public scene: THREE.Scene;
@@ -17,27 +18,19 @@ export class Stage {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
-    // Set the background color to black
-    this.scene.background = new THREE.Color(0);
-
-    // Set camera position
-    this.camera.position.z = 5;
+    this.refresh();
   }
 
-  private changeCameraDistance(distance: number): void {
+  private set cameraDistance(distance: number) {
     this.camera.position.z = distance;
-    // No closer than 1
-    if (this.camera.position.z < 1) {
-      this.camera.position.z = 1;
-    }
   }
 
-  public zoomIn(): void {
-    this.changeCameraDistance(this.camera.position.z - 1);
-  }
-
-  public zoomOut(): void {
-    this.changeCameraDistance(this.camera.position.z + 1);
+  public refresh(): void {
+    this.cameraDistance = settings.zDistance;
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.scene.background = new THREE.Color(settings.backgroundColor);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   public render(): void {

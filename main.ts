@@ -21,10 +21,12 @@ function animate(): void {
 document.addEventListener("keydown", (event: KeyboardEvent) => {
   switch (event.key) {
     case "ArrowUp":
-      stage.zoomIn();
+      settingsManager.zoomIn();
+      stage.refresh();
       break;
     case "ArrowDown":
-      stage.zoomOut();
+      settingsManager.zoomOut();
+      stage.refresh();
       break;
     case "ArrowLeft":
       settingsManager.switchBoxSize("small");
@@ -58,6 +60,11 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
 
   }
   console.log(JSON.stringify(settings, null, 2));
+});
+
+// window resize event listener
+window.addEventListener("resize", () => {
+  stage.refresh();
 });
 
 // Start the animation loop

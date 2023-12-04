@@ -10,25 +10,31 @@ type Config = {
   boxMode: BoxMode,
   boxShape: BoxShape,
   maxVelicity: number,
+  zDistance: number,
+  backgroundColor: number,
 }
 
 type Mode = "a" | "s" | "d";
-export type BoxMode = "wrap" | "bounce";
-export type BoxShape = "sphere" | "cube";
+type BoxMode = "wrap" | "bounce";
+type BoxShape = "sphere" | "cube";
 
 class SettingsManager {
   private default: Config = {
+    // behaviour factors
     separationFactor: 0.005,
     alignmentFactor: 0.002,
     cohesionFactor: 0.003,
     separationRadius: 0.1,
     alignmentRadius: 0.2,
     cohesionRadius: 0.2,
+    maxVelicity: 0.01,
+    // scene settings
     numBoids: 500,
-    boxSize: 3,
+    boxSize: 1,
     boxMode: "wrap",
     boxShape: "sphere",
-    maxVelicity: 0.01,
+    zDistance: 6,
+    backgroundColor: 0x000000,
   };
   public currentSettings: Config;
   private currentMode: Mode | null = null;
@@ -104,6 +110,22 @@ class SettingsManager {
 
   public setBoxShape (shape: BoxShape) {
     this.currentSettings.boxShape = shape;
+  }
+
+  private changeCameraDistance (delta: number) {
+    // no closer than 1
+    if (this.currentSettings.zDistance + delta < 1) {
+      return;
+    }
+    this.currentSettings.zDistance += delta;
+  }
+
+  public zoomIn () {
+    this.changeCameraDistance(-1);
+  }
+
+  public zoomOut () {
+    this.changeCameraDistance(1);
   }
 }
 
