@@ -21,12 +21,12 @@ function animate(): void {
 document.addEventListener("keydown", (event: KeyboardEvent) => {
   switch (event.key) {
     case "ArrowUp":
-      settingsManager.zoomIn();
-      stage.refresh();
+      settingsManager.increaseBoidSize();
+      flock.refreshAppearance();
       break;
     case "ArrowDown":
-      settingsManager.zoomOut();
-      stage.refresh();
+      settingsManager.decreaseBoidSize();
+      flock.refreshAppearance();
       break;
     case "ArrowLeft":
       settingsManager.switchBoxSize("small");

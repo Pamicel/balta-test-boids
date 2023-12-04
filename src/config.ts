@@ -1,17 +1,25 @@
 type Config = {
+  // behaviour factors
   separationFactor: number,
   alignmentFactor: number,
   cohesionFactor: number,
   separationRadius: number,
   alignmentRadius: number,
   cohesionRadius: number,
+  maxVelicity: number,
+  // scene settings
   numBoids: number,
   boxSize: number,
   boxMode: BoxMode,
   boxShape: BoxShape,
-  maxVelicity: number,
   zDistance: number,
   backgroundColor: number,
+  bloom: {
+    strength: number,
+    radius: number,
+    threshold: number,
+  },
+  boidSize: number,
 }
 
 type Mode = "a" | "s" | "d";
@@ -35,6 +43,12 @@ class SettingsManager {
     boxShape: "sphere",
     zDistance: 6,
     backgroundColor: 0x000000,
+    bloom: {
+      strength: 0.5,
+      radius: 0,
+      threshold: 0,
+    },
+    boidSize: 0.02,
   };
   public currentSettings: Config;
   private currentMode: Mode | null = null;
@@ -126,6 +140,25 @@ class SettingsManager {
 
   public zoomOut () {
     this.changeCameraDistance(1);
+  }
+
+  private get boidSize () {
+    return this.currentSettings.boidSize;
+  }
+
+  private set boidSize (size: number) {
+    if (size < 0.005) {
+      return;
+    }
+    this.currentSettings.boidSize = size;
+  }
+
+  public increaseBoidSize () {
+    this.boidSize += 0.002;
+  }
+
+  public decreaseBoidSize () {
+    this.boidSize -= 0.002;
   }
 }
 

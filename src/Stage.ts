@@ -22,25 +22,7 @@ export class Stage {
       1000
     );
     this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
-
-    // Postprocessing
-    this.composer = new EffectComposer(this.renderer);
-    const renderPass = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(renderPass);
-
-    const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-    bloomPass.threshold = 0;
-    bloomPass.strength = .5;
-    bloomPass.radius = 0;
-    this.composer.addPass(bloomPass);
-    // const afterimagePass = new AfterimagePass();
-    // this.composer.addPass(afterimagePass);
-
-    // const dotscreenPass = new DotScreenPass();
-    // this.composer.addPass(dotscreenPass);
-
     this.refresh();
   }
 
@@ -54,6 +36,21 @@ export class Stage {
     this.camera.updateProjectionMatrix();
     this.scene.background = new THREE.Color(settings.backgroundColor);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    // Postprocessing
+    this.composer = new EffectComposer(this.renderer);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      settings.bloom.strength,
+      settings.bloom.radius,
+      settings.bloom.threshold
+    );
+    this.composer.addPass(bloomPass);
+    // const afterimagePass = new AfterimagePass();
+    // this.composer.addPass(afterimagePass);
+    // const dotscreenPass = new DotScreenPass();
+    // this.composer.addPass(dotscreenPass);
   }
 
   public render(): void {

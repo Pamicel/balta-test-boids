@@ -9,6 +9,10 @@ export class Flock {
     this.boids = [];
   }
 
+  public refreshAppearance(): void {
+    this.boids.forEach(boid => boid.refreshAppearance());
+  }
+
   public addBoids(n: number, scene: THREE.Scene): void {
     for (let i = 0; i < n; i++) {
       const x: number = Math.random() * 2 - 1;

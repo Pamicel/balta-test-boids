@@ -6,12 +6,21 @@ export class Boid {
   public position: THREE.Vector3;
   public velocity: THREE.Vector3;
   // private line: THREE.Line;
-  private sphere: THREE.Mesh;
+  private particle: THREE.Mesh;
   private scene: THREE.Scene;
 
   constructor(x: number, y: number, z: number, scene: THREE.Scene) {
-    this.velocity = new THREE.Vector3(x, y, z);
+    // create random velocity
+    this.velocity =  new THREE.Vector3(
+      Math.random() * 2 - 1,
+      Math.random() * 2 - 1,
+      Math.random() * 2 - 1
+    );
+    this.scene = scene;
+    this.createParticle(new THREE.Vector3(x, y, z));
+  }
 
+  private createParticle(position: THREE.Vector3): void {
     // // Create a custom boid geometry
     // const boidGeometry: THREE.BufferGeometry = new THREE.BufferGeometry();
     // const vertices: Float32Array = new Float32Array([
@@ -22,33 +31,37 @@ export class Boid {
     // // Create a white line material
     // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     // this.line = new THREE.Line(boidGeometry, boidMaterial);
-
     // const boidGeometry = new THREE.CircleGeometry( 0.02, 6 );
-    // sphere
-    const boidGeometry = new THREE.SphereGeometry( 0.02, 6, 6 );
+
+    const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
     boidGeometry.computeVertexNormals();
     const boidMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-    this.sphere = new THREE.Mesh( boidGeometry, boidMaterial );
+    this.particle = new THREE.Mesh( boidGeometry, boidMaterial );
+    this.particle.position.copy(position);
+    // Set this.position to be a reference to the particle's position
+    this.position = this.particle.position;
+    // Add the particle to the scene
+    this.scene.add(this.particle);
+  }
 
-    // this.position = this.line.position;
-    // scene.add(this.line);
-
-    this.position = this.sphere.position;
-    scene.add(this.sphere);
-
-    this.scene = scene;
+  public refreshAppearance(): void {
+    const position = this.position.clone();
+    if (this.particle) {
+      this.scene.remove(this.particle);
+    }
+    this.createParticle(position);
   }
 
   public remove(): void {
     // this.scene.remove(this.line);
-    this.scene.remove(this.sphere);
+    this.scene.remove(this.particle);
   }
 
   // Update the boid's geometry to align with its heading
   private updateBoidGeometry(): void {
     // this.line.lookAt(this.position.clone().add(this.velocity));
     // this.circle.lookAt(this.position.clone().add(this.velocity));
-    this.sphere.lookAt(this.position.clone().add(this.velocity));
+    this.particle.lookAt(this.position.clone().add(this.velocity));
   }
 
   // Add forces
@@ -56,12 +69,16 @@ export class Boid {
     this.velocity.add(force);
   }
 
-  // Update the boid's position
-  public update(): void {
-    // limit velocity to 0.1
+  private limitVelocity(): void {
+    // limit velocity to settings.maxVelocity
     if (this.velocity.length() > settings.maxVelicity) {
       this.velocity.normalize().multiplyScalar(settings.maxVelicity);
     }
+  }
+
+  // Update the boid's position
+  public update(): void {
+    this.limitVelocity();
     this.position.add(this.velocity);
 
     const { boxSize } = settings;
