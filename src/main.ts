@@ -67,5 +67,15 @@ window.addEventListener("resize", () => {
   stage.refresh();
 });
 
+// Mouse event listener: if scroll zoom
+window.addEventListener("wheel", (event: WheelEvent) => {
+  if (event.deltaY < 0) {
+    settingsManager.zoomIn();
+  } else {
+    settingsManager.zoomOut();
+  }
+  stage.refresh();
+});
+
 // Start the animation loop
 animate();
