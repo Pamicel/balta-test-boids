@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import { Boid } from "./Boid";
-import { settings } from "./config";
+import { FlockSettings } from "../config";
 
 export class Flock {
   public boids: Boid[];
 
-  constructor() {
+  constructor(
+    private settings: FlockSettings
+  ) {
     this.boids = [];
   }
 
@@ -47,7 +49,7 @@ export class Flock {
           const distance: number = boid.position.distanceTo(otherBoid.position);
 
           // Separation
-          if (distance < settings.behaviour.separationRadius) {
+          if (distance < this.settings.behaviour.separationRadius) {
             // if distance is zero. push the boid in a random direction
             if (distance !== 0) {
               const diff: THREE.Vector3 = new THREE.Vector3().subVectors(
@@ -68,13 +70,13 @@ export class Flock {
           }
 
           // Alignment
-          if (distance < settings.behaviour.alignmentRadius) {
+          if (distance < this.settings.behaviour.alignmentRadius) {
             alignmentForce.add(otherBoid.velocity);
             alignmentCount++;
           }
 
           // Cohesion
-          if (distance < settings.behaviour.cohesionRadius) {
+          if (distance < this.settings.behaviour.cohesionRadius) {
             cohesionForce.add(otherBoid.position);
             cohesionCount++;
           }
@@ -85,20 +87,20 @@ export class Flock {
       if (separationCount > 0) {
         separationForce.divideScalar(separationCount);
         separationForce.normalize();
-        separationForce.multiplyScalar(settings.behaviour.separationFactor); // Adjust separation strength
+        separationForce.multiplyScalar(this.settings.behaviour.separationFactor); // Adjust separation strength
       }
 
       if (alignmentCount > 0) {
         alignmentForce.divideScalar(alignmentCount);
         alignmentForce.normalize();
-        alignmentForce.multiplyScalar(settings.behaviour.alignmentFactor); // Adjust alignment strength
+        alignmentForce.multiplyScalar(this.settings.behaviour.alignmentFactor); // Adjust alignment strength
       }
 
       if (cohesionCount > 0) {
         cohesionForce.divideScalar(cohesionCount);
         cohesionForce.sub(boid.position);
         cohesionForce.normalize();
-        cohesionForce.multiplyScalar(settings.behaviour.cohesionFactor); // Adjust cohesion strength
+        cohesionForce.multiplyScalar(this.settings.behaviour.cohesionFactor); // Adjust cohesion strength
       }
 
       // Update boid's velocity based on forces

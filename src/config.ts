@@ -1,9 +1,9 @@
-// export type FlockSettings = {
-//   boidSize: number,
-//   numBoids: number,
-//   behaviour: BehaviourSettings,
-//   spaceConstraints: SpaceConstraintsSettings,
-// }
+export type FlockSettings = {
+  boidSize: number,
+  numBoids: number,
+  behaviour: BehaviourSettings,
+  spaceConstraints: SpaceConstraintsSettings,
+}
 
 type BehaviourSettings = {
   separationFactor: number,

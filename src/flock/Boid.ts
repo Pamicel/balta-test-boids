@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { settings } from "./config";
+import { settings } from "../config";
 
 // Boid class
 export class Boid {
