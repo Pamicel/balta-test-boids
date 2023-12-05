@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { settings } from "../config";
+import { SpaceConstraintsSettings } from "../config";
 
 // Boid class
 export class Boid {
@@ -11,9 +11,13 @@ export class Boid {
   constructor({
     position,
     scene,
+    color,
+    size,
   }: {
     position: THREE.Vector3;
     scene: THREE.Scene;
+    color: number;
+    size: number;
   }) {
     // create random velocity
     this.velocity = new THREE.Vector3(
@@ -22,10 +26,18 @@ export class Boid {
       Math.random() * 2 - 1
     );
     this.scene = scene;
-    this.createParticle(position);
+    this.createParticle({ position, color, size });
   }
 
-  private createParticle(position: THREE.Vector3): void {
+  private createParticle({
+    position,
+    color,
+    size,
+  }: {
+    position: THREE.Vector3;
+    color: number;
+    size: number;
+  }): void {
     // // Create a custom boid geometry
     // const boidGeometry: THREE.BufferGeometry = new THREE.BufferGeometry();
     // const vertices: Float32Array = new Float32Array([
@@ -37,11 +49,11 @@ export class Boid {
     // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: settings.boidColor });
     // this.particle = new THREE.Line(boidGeometry, boidMaterial);
 
-    const boidGeometry = new THREE.CircleGeometry(settings.flock.boidSize, 6);
+    const boidGeometry = new THREE.CircleGeometry(size, 6);
     // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
     // boidGeometry.computeVertexNormals();
     const boidMaterial = new THREE.MeshBasicMaterial({
-      color: settings.boidColor,
+      color: color,
       side: THREE.DoubleSide,
     });
     this.particle = new THREE.Mesh(boidGeometry, boidMaterial);
@@ -52,12 +64,18 @@ export class Boid {
     this.scene.add(this.particle);
   }
 
-  public refreshAppearance(): void {
+  public changeAppearance({
+    color,
+    size,
+  }: {
+    color: number;
+    size: number;
+  }): void {
     const position = this.position.clone();
     if (this.particle) {
       this.scene.remove(this.particle);
     }
-    this.createParticle(position);
+    this.createParticle({ position, color, size });
   }
 
   public remove(): void {
@@ -66,7 +84,7 @@ export class Boid {
   }
 
   // Update the boid's geometry to align with its heading
-  private updateBoidGeometry(): void {
+  private alignWithMovement(): void {
     // this.line.lookAt(this.position.clone().add(this.velocity));
     // this.circle.lookAt(this.position.clone().add(this.velocity));
     this.particle.lookAt(this.position.clone().add(this.velocity));
@@ -77,36 +95,33 @@ export class Boid {
     this.velocity.add(force);
   }
 
-  private limitVelocity(): void {
+  private limitVelocity(maxVelocity: number): void {
     // limit velocity to settings.maxVelocity
-    if (this.velocity.length() > settings.flock.behaviour.maxVelicity) {
-      this.velocity
-        .normalize()
-        .multiplyScalar(settings.flock.behaviour.maxVelicity);
+    if (this.velocity.length() > maxVelocity) {
+      this.velocity.normalize().multiplyScalar(maxVelocity);
     }
   }
 
   // Update the boid's position
-  public update(): void {
-    if (settings.flock.spaceConstraints.pushFromCenter) {
+  public update(constraints: {
+    space: SpaceConstraintsSettings;
+    maxVelocity: number;
+  }): void {
+    if (constraints.space.pushFromCenter) {
       const distanceToCenter = this.position.length();
-      if (
-        distanceToCenter < settings.flock.spaceConstraints.pushFromCenter.radius
-      ) {
+      if (distanceToCenter < constraints.space.pushFromCenter.radius) {
         const pushForce = this.position
           .clone()
           .normalize()
-          .multiplyScalar(
-            settings.flock.spaceConstraints.pushFromCenter.strength
-          );
+          .multiplyScalar(constraints.space.pushFromCenter.strength);
         this.applyForce(pushForce);
       }
     }
 
-    this.limitVelocity();
+    this.limitVelocity(constraints.maxVelocity);
     this.position.add(this.velocity);
 
-    const { boxSize, boxShape, boxMode } = settings.flock.spaceConstraints;
+    const { boxSize, boxShape, boxMode } = constraints.space;
     if (boxShape === "cube" && boxMode === "wrap") {
       // jump to the other side of the scene when boid reaches the edge
       if (this.position.x > boxSize) {
@@ -168,6 +183,6 @@ export class Boid {
       }
     }
 
-    this.updateBoidGeometry();
+    this.alignWithMovement();
   }
 }

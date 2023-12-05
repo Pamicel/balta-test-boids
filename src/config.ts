@@ -1,21 +1,21 @@
-export type FlockSettings = {
+type FlockSettings = {
   boidSize: number;
   numBoids: number;
   behaviour: BehaviourSettings;
   spaceConstraints: SpaceConstraintsSettings;
 };
 
-type BehaviourSettings = {
+export type BehaviourSettings = {
   separationFactor: number;
   alignmentFactor: number;
   cohesionFactor: number;
   separationRadius: number;
   alignmentRadius: number;
   cohesionRadius: number;
-  maxVelicity: number;
+  maxVelocity: number;
 };
 
-type SpaceConstraintsSettings = {
+export type SpaceConstraintsSettings = {
   boxSize: number;
   boxMode: BoxMode;
   boxShape: BoxShape;
@@ -67,7 +67,7 @@ class SettingsManager {
         separationRadius: 0.1,
         alignmentRadius: 0.2,
         cohesionRadius: 0.2,
-        maxVelicity: 0.01,
+        maxVelocity: 0.01,
       },
       // space constraints settings
       spaceConstraints: {
@@ -128,8 +128,8 @@ class SettingsManager {
     this.currentSettings.flock.behaviour.separationRadius =
       this.default.flock.behaviour.separationRadius * 1.2;
     // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelicity =
-      this.default.flock.behaviour.maxVelicity / 2;
+    this.currentSettings.flock.behaviour.maxVelocity =
+      this.default.flock.behaviour.maxVelocity / 2;
   }
 
   private behaviourModeD() {
@@ -137,8 +137,8 @@ class SettingsManager {
     this.currentSettings.flock.behaviour.separationRadius =
       this.default.flock.behaviour.separationRadius * 2;
     // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelicity =
-      this.default.flock.behaviour.maxVelicity * 2;
+    this.currentSettings.flock.behaviour.maxVelocity =
+      this.default.flock.behaviour.maxVelocity * 2;
   }
 
   public switchBoxSize(size: "small" | "large") {

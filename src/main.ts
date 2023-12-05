@@ -6,8 +6,14 @@ import { Flock } from "./flock/Flock";
 const stage: Stage = new Stage();
 // Create the flock
 const flock: Flock = new Flock({
-  settings: settingsManager.currentSettings.flock,
+  numBoids: settings.flock.numBoids,
+  boidAppearance: {
+    color: settings.boidColor,
+    size: settings.flock.boidSize,
+  },
   scene: stage.scene,
+  behaviour: settings.flock.behaviour,
+  spaceConstraints: settings.flock.spaceConstraints,
 });
 
 // Animation function

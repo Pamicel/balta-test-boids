@@ -1,24 +1,53 @@
 import * as THREE from "three";
 import { Boid } from "./Boid";
-import { FlockSettings } from "../config";
+import { BehaviourSettings, SpaceConstraintsSettings } from "../config";
+
+type BoidAppearance = {
+  color: number;
+  size: number;
+};
 
 export class Flock {
   public boids: Boid[] = [];
-  public settings: FlockSettings;
+  private behaviourSettings: BehaviourSettings;
+  private boidAppearance: BoidAppearance;
+  private spaceConstraints: SpaceConstraintsSettings;
 
   constructor({
-    settings,
+    numBoids,
+    boidAppearance,
+    spaceConstraints,
+    behaviour,
     scene,
   }: {
-    settings: FlockSettings;
+    numBoids: number;
+    boidAppearance: BoidAppearance;
+    spaceConstraints: SpaceConstraintsSettings;
+    behaviour: BehaviourSettings;
     scene: THREE.Scene;
   }) {
-    this.settings = { ...settings };
-    this.addBoids(settings.numBoids, scene);
+    this.behaviourSettings = { ...behaviour };
+    this.boidAppearance = { ...boidAppearance };
+    this.spaceConstraints = { ...spaceConstraints };
+    this.addBoids(numBoids, scene);
   }
 
-  public refreshAppearance(): void {
-    this.boids.forEach((boid) => boid.refreshAppearance());
+  public changeBehaviour(behaviour: BehaviourSettings) {
+    this.behaviourSettings = { ...behaviour };
+  }
+
+  public changeSpaceConstraints(spaceConstraints: SpaceConstraintsSettings) {
+    this.spaceConstraints = { ...spaceConstraints };
+  }
+
+  public changeBoidsAppearance(boidSettings: BoidAppearance) {
+    this.boidAppearance = { ...boidSettings };
+    this.boids.forEach((boid) =>
+      boid.changeAppearance({
+        color: this.boidAppearance.color,
+        size: this.boidAppearance.size,
+      })
+    );
   }
 
   public addBoids(n: number, scene: THREE.Scene): void {
@@ -27,7 +56,12 @@ export class Flock {
       const y: number = Math.random() * 2 - 1;
       const z: number = Math.random() * 2 - 1;
       const position = new THREE.Vector3(x, y, z);
-      const boid: Boid = new Boid({ position, scene });
+      const boid: Boid = new Boid({
+        position,
+        scene,
+        color: this.boidAppearance.color,
+        size: this.boidAppearance.size,
+      });
       this.boids.push(boid);
     }
   }
@@ -51,12 +85,22 @@ export class Flock {
       let alignmentCount: number = 0;
       let cohesionCount: number = 0;
 
+      const {
+        separationRadius,
+        alignmentRadius,
+        cohesionRadius,
+        separationFactor,
+        alignmentFactor,
+        cohesionFactor,
+        maxVelocity,
+      } = this.behaviourSettings;
+
       for (const otherBoid of this.boids) {
         if (otherBoid !== boid) {
           const distance: number = boid.position.distanceTo(otherBoid.position);
 
           // Separation
-          if (distance < this.settings.behaviour.separationRadius) {
+          if (distance < separationRadius) {
             // if distance is zero. push the boid in a random direction
             if (distance !== 0) {
               const diff: THREE.Vector3 = new THREE.Vector3().subVectors(
@@ -77,13 +121,13 @@ export class Flock {
           }
 
           // Alignment
-          if (distance < this.settings.behaviour.alignmentRadius) {
+          if (distance < alignmentRadius) {
             alignmentForce.add(otherBoid.velocity);
             alignmentCount++;
           }
 
           // Cohesion
-          if (distance < this.settings.behaviour.cohesionRadius) {
+          if (distance < cohesionRadius) {
             cohesionForce.add(otherBoid.position);
             cohesionCount++;
           }
@@ -94,22 +138,20 @@ export class Flock {
       if (separationCount > 0) {
         separationForce.divideScalar(separationCount);
         separationForce.normalize();
-        separationForce.multiplyScalar(
-          this.settings.behaviour.separationFactor
-        ); // Adjust separation strength
+        separationForce.multiplyScalar(separationFactor); // Adjust separation strength
       }
 
       if (alignmentCount > 0) {
         alignmentForce.divideScalar(alignmentCount);
         alignmentForce.normalize();
-        alignmentForce.multiplyScalar(this.settings.behaviour.alignmentFactor); // Adjust alignment strength
+        alignmentForce.multiplyScalar(alignmentFactor); // Adjust alignment strength
       }
 
       if (cohesionCount > 0) {
         cohesionForce.divideScalar(cohesionCount);
         cohesionForce.sub(boid.position);
         cohesionForce.normalize();
-        cohesionForce.multiplyScalar(this.settings.behaviour.cohesionFactor); // Adjust cohesion strength
+        cohesionForce.multiplyScalar(cohesionFactor); // Adjust cohesion strength
       }
 
       // Update boid's velocity based on forces
@@ -117,7 +159,10 @@ export class Flock {
       boid.applyForce(alignmentForce);
       boid.applyForce(cohesionForce);
       // Update boid's position based on velocity
-      boid.update();
+      boid.update({
+        space: this.spaceConstraints,
+        maxVelocity,
+      });
     }
   }
 }
