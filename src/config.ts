@@ -19,12 +19,17 @@ type Config = {
     radius: number,
     threshold: number,
   },
+  pushFromCenter: PushFromCenter | null,
   boidSize: number,
 }
 
 type Mode = "a" | "s" | "d";
 type BoxMode = "wrap" | "bounce";
 type BoxShape = "sphere" | "cube";
+type PushFromCenter = {
+  radius: number,
+  strength: number,
+}
 
 class SettingsManager {
   private default: Config = {
@@ -49,6 +54,10 @@ class SettingsManager {
       threshold: 0,
     },
     boidSize: 0.06,
+    pushFromCenter: {
+      radius: 0.5,
+      strength: 0.001,
+    },
   };
   public currentSettings: Config;
   private currentMode: Mode | null = null;
@@ -159,6 +168,20 @@ class SettingsManager {
 
   public decreaseBoidSize () {
     this.boidSize -= 0.002;
+  }
+
+  public increaseCenterSize () {
+    if (!this.currentSettings.pushFromCenter) {
+      return;
+    }
+    this.currentSettings.pushFromCenter.radius += 0.1;
+  }
+
+  public decreaseCenterSize () {
+    if (!this.currentSettings.pushFromCenter) {
+      return;
+    }
+    this.currentSettings.pushFromCenter.radius -= 0.1;
   }
 }
 

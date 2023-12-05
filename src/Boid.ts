@@ -78,6 +78,14 @@ export class Boid {
 
   // Update the boid's position
   public update(): void {
+    if (settings.pushFromCenter) {
+      const distanceToCenter = this.position.length();
+      if (distanceToCenter < settings.pushFromCenter.radius) {
+        const pushForce = this.position.clone().normalize().multiplyScalar(settings.pushFromCenter.strength);
+        this.applyForce(pushForce);
+      }
+    }
+
     this.limitVelocity();
     this.position.add(this.velocity);
 
