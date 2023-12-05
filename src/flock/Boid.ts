@@ -8,7 +8,7 @@ export class Boid {
   private particle: THREE.Mesh;
   private scene: THREE.Scene;
 
-  constructor(x: number, y: number, z: number, scene: THREE.Scene) {
+  constructor({ position, scene }: { position: THREE.Vector3; scene: THREE.Scene; }) {
     // create random velocity
     this.velocity =  new THREE.Vector3(
       Math.random() * 2 - 1,
@@ -16,7 +16,7 @@ export class Boid {
       Math.random() * 2 - 1
     );
     this.scene = scene;
-    this.createParticle(new THREE.Vector3(x, y, z));
+    this.createParticle(position);
   }
 
   private createParticle(position: THREE.Vector3): void {

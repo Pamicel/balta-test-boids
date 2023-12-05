@@ -6,10 +6,13 @@ export class Flock {
   public boids: Boid[] = [];
   public settings: FlockSettings;
 
-  constructor(
-    settings: FlockSettings,
-    scene: THREE.Scene
-  ) {
+  constructor({
+    settings,
+    scene
+  }: {
+    settings: FlockSettings;
+    scene: THREE.Scene;
+  }) {
     this.settings = { ...settings };
     this.addBoids(settings.numBoids, scene)
   }
@@ -23,7 +26,8 @@ export class Flock {
       const x: number = Math.random() * 2 - 1;
       const y: number = Math.random() * 2 - 1;
       const z: number = Math.random() * 2 - 1;
-      const boid: Boid = new Boid(x, y, z, scene);
+      const position = new THREE.Vector3(x, y, z);
+      const boid: Boid = new Boid({ position, scene });
       this.boids.push(boid);
     }
   }

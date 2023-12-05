@@ -5,10 +5,10 @@ import { Flock } from "./flock/Flock";
 // Create the scene
 const stage: Stage = new Stage();
 // Create the flock
-const flock: Flock = new Flock(
-  settingsManager.currentSettings.flock,
-  stage.scene
-);
+const flock: Flock = new Flock({
+  settings: settingsManager.currentSettings.flock,
+  scene: stage.scene
+});
 
 // Animation function
 function animate(): void {
