@@ -3,12 +3,15 @@ import { Boid } from "./Boid";
 import { FlockSettings } from "../config";
 
 export class Flock {
-  public boids: Boid[];
+  public boids: Boid[] = [];
+  public settings: FlockSettings;
 
   constructor(
-    private settings: FlockSettings
+    settings: FlockSettings,
+    scene: THREE.Scene
   ) {
-    this.boids = [];
+    this.settings = { ...settings };
+    this.addBoids(settings.numBoids, scene)
   }
 
   public refreshAppearance(): void {

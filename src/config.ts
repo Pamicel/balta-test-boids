@@ -32,13 +32,7 @@ type Config = {
     radius: number,
     threshold: number,
   },
-  // behaviour settings
-  behaviour: BehaviourSettings,
-  // flock settings
-  boidSize: number,
-  numBoids: number,
-  // space constraints settings
-  spaceConstraints: SpaceConstraintsSettings,
+  flock: FlockSettings,
 }
 
 type Mode = "a" | "s" | "d";
@@ -62,26 +56,28 @@ class SettingsManager {
     },
 
     // flock settings
-    numBoids: 500,
-    boidSize: 0.06,
-    // behaviour settings
-    behaviour: {
-      separationFactor: 0.005,
-      alignmentFactor: 0.002,
-      cohesionFactor: 0.003,
-      separationRadius: 0.1,
-      alignmentRadius: 0.2,
-      cohesionRadius: 0.2,
-      maxVelicity: 0.01,
-    },
-    // space constraints settings
-    spaceConstraints: {
-      boxSize: 1,
-      boxMode: "wrap",
-      boxShape: "sphere",
-      pushFromCenter: {
-        radius: 0.5,
-        strength: 0.001,
+    flock: {
+      numBoids: 500,
+      boidSize: 0.06,
+      // behaviour settings
+      behaviour: {
+        separationFactor: 0.005,
+        alignmentFactor: 0.002,
+        cohesionFactor: 0.003,
+        separationRadius: 0.1,
+        alignmentRadius: 0.2,
+        cohesionRadius: 0.2,
+        maxVelicity: 0.01,
+      },
+      // space constraints settings
+      spaceConstraints: {
+        boxSize: 1,
+        boxMode: "wrap",
+        boxShape: "sphere",
+        pushFromCenter: {
+          radius: 0.5,
+          strength: 0.001,
+        },
       },
     },
   };
@@ -93,7 +89,7 @@ class SettingsManager {
   }
 
   public resetBehaviour () {
-    this.currentSettings.behaviour = this.default.behaviour;
+    this.currentSettings.flock.behaviour = this.default.flock.behaviour;
   }
 
   public setBehaviourMode (mode: Mode) {
@@ -120,41 +116,41 @@ class SettingsManager {
 
   private behaviourModeA () {
     // increase cohesion radius
-    this.currentSettings.behaviour.cohesionRadius = this.default.behaviour.cohesionRadius * 10;
+    this.currentSettings.flock.behaviour.cohesionRadius = this.default.flock.behaviour.cohesionRadius * 10;
   }
 
   private behaviourModeS () {
     // increase separation factor
-    this.currentSettings.behaviour.alignmentFactor = this.default.behaviour.alignmentFactor * 1.2;
+    this.currentSettings.flock.behaviour.alignmentFactor = this.default.flock.behaviour.alignmentFactor * 1.2;
     // increase separation radius
-    this.currentSettings.behaviour.separationRadius = this.default.behaviour.separationRadius * 1.2;
+    this.currentSettings.flock.behaviour.separationRadius = this.default.flock.behaviour.separationRadius * 1.2;
     // Make boids slower
-    this.currentSettings.behaviour.maxVelicity = this.default.behaviour.maxVelicity / 2;
+    this.currentSettings.flock.behaviour.maxVelicity = this.default.flock.behaviour.maxVelicity / 2;
   }
 
   private behaviourModeD () {
     // increase separation radius
-    this.currentSettings.behaviour.separationRadius = this.default.behaviour.separationRadius * 2;
+    this.currentSettings.flock.behaviour.separationRadius = this.default.flock.behaviour.separationRadius * 2;
     // Make boids slower
-    this.currentSettings.behaviour.maxVelicity = this.default.behaviour.maxVelicity * 2;
+    this.currentSettings.flock.behaviour.maxVelicity = this.default.flock.behaviour.maxVelicity * 2;
   }
 
   public switchBoxSize (size: "small" | "large") {
     const smallBoxSize = 1;
     const largeBoxSize = 4;
     if (size === "large") {
-      this.currentSettings.spaceConstraints.boxSize = largeBoxSize;
+      this.currentSettings.flock.spaceConstraints.boxSize = largeBoxSize;
     } else {
-      this.currentSettings.spaceConstraints.boxSize = smallBoxSize;
+      this.currentSettings.flock.spaceConstraints.boxSize = smallBoxSize;
     }
   }
 
   public setBoxMode (mode: BoxMode) {
-    this.currentSettings.spaceConstraints.boxMode = mode;
+    this.currentSettings.flock.spaceConstraints.boxMode = mode;
   }
 
   public setBoxShape (shape: BoxShape) {
-    this.currentSettings.spaceConstraints.boxShape = shape;
+    this.currentSettings.flock.spaceConstraints.boxShape = shape;
   }
 
   private changeCameraDistance (delta: number) {
@@ -174,14 +170,14 @@ class SettingsManager {
   }
 
   private get boidSize () {
-    return this.currentSettings.boidSize;
+    return this.currentSettings.flock.boidSize;
   }
 
   private set boidSize (size: number) {
     if (size < 0.005) {
       return;
     }
-    this.currentSettings.boidSize = size;
+    this.currentSettings.flock.boidSize = size;
   }
 
   public increaseBoidSize () {
@@ -193,17 +189,17 @@ class SettingsManager {
   }
 
   public increaseCenterSize () {
-    if (!this.currentSettings.spaceConstraints.pushFromCenter) {
+    if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
       return;
     }
-    this.currentSettings.spaceConstraints.pushFromCenter.radius += 0.1;
+    this.currentSettings.flock.spaceConstraints.pushFromCenter.radius += 0.1;
   }
 
   public decreaseCenterSize () {
-    if (!this.currentSettings.spaceConstraints.pushFromCenter) {
+    if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
       return;
     }
-    this.currentSettings.spaceConstraints.pushFromCenter.radius -= 0.1;
+    this.currentSettings.flock.spaceConstraints.pushFromCenter.radius -= 0.1;
   }
 }
 

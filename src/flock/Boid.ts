@@ -31,7 +31,7 @@ export class Boid {
     // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: settings.boidColor });
     // this.particle = new THREE.Line(boidGeometry, boidMaterial);
 
-    const boidGeometry = new THREE.CircleGeometry(settings.boidSize, 6);
+    const boidGeometry = new THREE.CircleGeometry(settings.flock.boidSize, 6);
     // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
     // boidGeometry.computeVertexNormals();
     const boidMaterial = new THREE.MeshBasicMaterial( { color: settings.boidColor, side: THREE.DoubleSide } );
@@ -70,17 +70,17 @@ export class Boid {
 
   private limitVelocity(): void {
     // limit velocity to settings.maxVelocity
-    if (this.velocity.length() > settings.behaviour.maxVelicity) {
-      this.velocity.normalize().multiplyScalar(settings.behaviour.maxVelicity);
+    if (this.velocity.length() > settings.flock.behaviour.maxVelicity) {
+      this.velocity.normalize().multiplyScalar(settings.flock.behaviour.maxVelicity);
     }
   }
 
   // Update the boid's position
   public update(): void {
-    if (settings.spaceConstraints.pushFromCenter) {
+    if (settings.flock.spaceConstraints.pushFromCenter) {
       const distanceToCenter = this.position.length();
-      if (distanceToCenter < settings.spaceConstraints.pushFromCenter.radius) {
-        const pushForce = this.position.clone().normalize().multiplyScalar(settings.spaceConstraints.pushFromCenter.strength);
+      if (distanceToCenter < settings.flock.spaceConstraints.pushFromCenter.radius) {
+        const pushForce = this.position.clone().normalize().multiplyScalar(settings.flock.spaceConstraints.pushFromCenter.strength);
         this.applyForce(pushForce);
       }
     }
@@ -88,7 +88,7 @@ export class Boid {
     this.limitVelocity();
     this.position.add(this.velocity);
 
-    const { boxSize, boxShape, boxMode } = settings.spaceConstraints;
+    const { boxSize, boxShape, boxMode } = settings.flock.spaceConstraints;
     if (boxShape === "cube" && boxMode === "wrap") {
       // jump to the other side of the scene when boid reaches the edge
       if (this.position.x > boxSize) {
