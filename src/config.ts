@@ -11,11 +11,7 @@ type BehaviourSettings = {
 type Config = {
   behaviour: BehaviourSettings,
   // scene settings
-  numBoids: number,
-  boxSize: number,
-  boxMode: BoxMode,
-  boxShape: BoxShape,
-  zDistance: number,
+  cameraDistance: number,
   backgroundColor: number,
   boidColor: number,
   bloom: {
@@ -23,8 +19,13 @@ type Config = {
     radius: number,
     threshold: number,
   },
-  pushFromCenter: PushFromCenter | null,
+
   boidSize: number,
+  numBoids: number,
+  boxSize: number,
+  boxMode: BoxMode,
+  boxShape: BoxShape,
+  pushFromCenter: PushFromCenter | null,
 }
 
 type Mode = "a" | "s" | "d";
@@ -52,7 +53,7 @@ class SettingsManager {
     boxSize: 1,
     boxMode: "wrap",
     boxShape: "sphere",
-    zDistance: 6,
+    cameraDistance: 6,
     backgroundColor: 0x000000,
     boidColor: 0xffffff,
     bloom: {
@@ -140,10 +141,10 @@ class SettingsManager {
 
   private changeCameraDistance (delta: number) {
     // no closer than 1
-    if (this.currentSettings.zDistance + delta < 1) {
+    if (this.currentSettings.cameraDistance + delta < 1) {
       return;
     }
-    this.currentSettings.zDistance += delta;
+    this.currentSettings.cameraDistance += delta;
   }
 
   public zoomIn () {

@@ -31,7 +31,7 @@ export class Stage {
   }
 
   public refresh(): void {
-    this.cameraDistance = settings.zDistance;
+    this.cameraDistance = settings.cameraDistance;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.scene.background = new THREE.Color(settings.backgroundColor);
