@@ -1,3 +1,10 @@
+// export type FlockSettings = {
+//   boidSize: number,
+//   numBoids: number,
+//   behaviour: BehaviourSettings,
+//   spaceConstraints: SpaceConstraintsSettings,
+// }
+
 type BehaviourSettings = {
   separationFactor: number,
   alignmentFactor: number,
@@ -8,9 +15,15 @@ type BehaviourSettings = {
   maxVelicity: number,
 }
 
+type SpaceConstraintsSettings = {
+  boxSize: number,
+  boxMode: BoxMode,
+  boxShape: BoxShape,
+  pushFromCenter: PushFromCenter | null,
+}
+
 type Config = {
-  behaviour: BehaviourSettings,
-  // scene settings
+  // global scene settings
   cameraDistance: number,
   backgroundColor: number,
   boidColor: number,
@@ -19,13 +32,13 @@ type Config = {
     radius: number,
     threshold: number,
   },
-
+  // behaviour settings
+  behaviour: BehaviourSettings,
+  // flock settings
   boidSize: number,
   numBoids: number,
-  boxSize: number,
-  boxMode: BoxMode,
-  boxShape: BoxShape,
-  pushFromCenter: PushFromCenter | null,
+  // space constraints settings
+  spaceConstraints: SpaceConstraintsSettings,
 }
 
 type Mode = "a" | "s" | "d";
@@ -38,21 +51,7 @@ type PushFromCenter = {
 
 class SettingsManager {
   private default: Config = {
-    behaviour: {
-      // behaviour factors
-      separationFactor: 0.005,
-      alignmentFactor: 0.002,
-      cohesionFactor: 0.003,
-      separationRadius: 0.1,
-      alignmentRadius: 0.2,
-      cohesionRadius: 0.2,
-      maxVelicity: 0.01,
-    },
-    // scene settings
-    numBoids: 500,
-    boxSize: 1,
-    boxMode: "wrap",
-    boxShape: "sphere",
+    // global scene settings
     cameraDistance: 6,
     backgroundColor: 0x000000,
     boidColor: 0xffffff,
@@ -61,10 +60,29 @@ class SettingsManager {
       radius: 0,
       threshold: 0,
     },
+
+    // flock settings
+    numBoids: 500,
     boidSize: 0.06,
-    pushFromCenter: {
-      radius: 0.5,
-      strength: 0.001,
+    // behaviour settings
+    behaviour: {
+      separationFactor: 0.005,
+      alignmentFactor: 0.002,
+      cohesionFactor: 0.003,
+      separationRadius: 0.1,
+      alignmentRadius: 0.2,
+      cohesionRadius: 0.2,
+      maxVelicity: 0.01,
+    },
+    // space constraints settings
+    spaceConstraints: {
+      boxSize: 1,
+      boxMode: "wrap",
+      boxShape: "sphere",
+      pushFromCenter: {
+        radius: 0.5,
+        strength: 0.001,
+      },
     },
   };
   public currentSettings: Config;
@@ -125,18 +143,18 @@ class SettingsManager {
     const smallBoxSize = 1;
     const largeBoxSize = 4;
     if (size === "large") {
-      this.currentSettings.boxSize = largeBoxSize;
+      this.currentSettings.spaceConstraints.boxSize = largeBoxSize;
     } else {
-      this.currentSettings.boxSize = smallBoxSize;
+      this.currentSettings.spaceConstraints.boxSize = smallBoxSize;
     }
   }
 
   public setBoxMode (mode: BoxMode) {
-    this.currentSettings.boxMode = mode;
+    this.currentSettings.spaceConstraints.boxMode = mode;
   }
 
   public setBoxShape (shape: BoxShape) {
-    this.currentSettings.boxShape = shape;
+    this.currentSettings.spaceConstraints.boxShape = shape;
   }
 
   private changeCameraDistance (delta: number) {
@@ -175,17 +193,17 @@ class SettingsManager {
   }
 
   public increaseCenterSize () {
-    if (!this.currentSettings.pushFromCenter) {
+    if (!this.currentSettings.spaceConstraints.pushFromCenter) {
       return;
     }
-    this.currentSettings.pushFromCenter.radius += 0.1;
+    this.currentSettings.spaceConstraints.pushFromCenter.radius += 0.1;
   }
 
   public decreaseCenterSize () {
-    if (!this.currentSettings.pushFromCenter) {
+    if (!this.currentSettings.spaceConstraints.pushFromCenter) {
       return;
     }
-    this.currentSettings.pushFromCenter.radius -= 0.1;
+    this.currentSettings.spaceConstraints.pushFromCenter.radius -= 0.1;
   }
 }
 

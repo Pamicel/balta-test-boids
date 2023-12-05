@@ -78,10 +78,10 @@ export class Boid {
 
   // Update the boid's position
   public update(): void {
-    if (settings.pushFromCenter) {
+    if (settings.spaceConstraints.pushFromCenter) {
       const distanceToCenter = this.position.length();
-      if (distanceToCenter < settings.pushFromCenter.radius) {
-        const pushForce = this.position.clone().normalize().multiplyScalar(settings.pushFromCenter.strength);
+      if (distanceToCenter < settings.spaceConstraints.pushFromCenter.radius) {
+        const pushForce = this.position.clone().normalize().multiplyScalar(settings.spaceConstraints.pushFromCenter.strength);
         this.applyForce(pushForce);
       }
     }
@@ -89,8 +89,8 @@ export class Boid {
     this.limitVelocity();
     this.position.add(this.velocity);
 
-    const { boxSize } = settings;
-    if (settings.boxShape === "cube" && settings.boxMode === "wrap") {
+    const { boxSize, boxShape, boxMode } = settings.spaceConstraints;
+    if (boxShape === "cube" && boxMode === "wrap") {
       // jump to the other side of the scene when boid reaches the edge
       if (this.position.x > boxSize) {
         this.position.x = -boxSize;
@@ -109,7 +109,7 @@ export class Boid {
       }
     }
 
-    if (settings.boxShape === "cube" && settings.boxMode === "bounce") {
+    if (boxShape === "cube" && boxMode === "bounce") {
       // bounce off when boid reaches the edge
       if (this.position.x > boxSize) {
         this.position.x = boxSize;
@@ -134,7 +134,7 @@ export class Boid {
       }
     }
 
-    if (settings.boxShape === "sphere" && settings.boxMode === "bounce") {
+    if (boxShape === "sphere" && boxMode === "bounce") {
       // bounce off when the boid reaches the edge of the sphere of diameter boxSize
       const distanceToCenter = this.position.length();
       if (distanceToCenter > boxSize) {
@@ -143,7 +143,7 @@ export class Boid {
       }
     }
 
-    if (settings.boxShape === "sphere" && settings.boxMode === "wrap") {
+    if (boxShape === "sphere" && boxMode === "wrap") {
       // jump to the other side of the sphere when the boid reaches the edge of the sphere of diameter boxSize
       const distanceToCenter = this.position.length();
       if (distanceToCenter > boxSize) {
