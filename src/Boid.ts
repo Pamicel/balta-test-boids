@@ -35,7 +35,7 @@ export class Boid {
     const boidGeometry = new THREE.CircleGeometry(settings.boidSize, 6);
     // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
     // boidGeometry.computeVertexNormals();
-    const boidMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+    const boidMaterial = new THREE.MeshBasicMaterial( { color: settings.boidColor, side: THREE.DoubleSide } );
     this.particle = new THREE.Mesh( boidGeometry, boidMaterial );
     this.particle.position.copy(position);
     // Set this.position to be a reference to the particle's position
@@ -71,8 +71,8 @@ export class Boid {
 
   private limitVelocity(): void {
     // limit velocity to settings.maxVelocity
-    if (this.velocity.length() > settings.maxVelicity) {
-      this.velocity.normalize().multiplyScalar(settings.maxVelicity);
+    if (this.velocity.length() > settings.behaviour.maxVelicity) {
+      this.velocity.normalize().multiplyScalar(settings.behaviour.maxVelicity);
     }
   }
 

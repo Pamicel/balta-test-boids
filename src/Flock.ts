@@ -47,7 +47,7 @@ export class Flock {
           const distance: number = boid.position.distanceTo(otherBoid.position);
 
           // Separation
-          if (distance < settings.separationRadius) {
+          if (distance < settings.behaviour.separationRadius) {
             // if distance is zero. push the boid in a random direction
             if (distance !== 0) {
               const diff: THREE.Vector3 = new THREE.Vector3().subVectors(
@@ -68,13 +68,13 @@ export class Flock {
           }
 
           // Alignment
-          if (distance < settings.alignmentRadius) {
+          if (distance < settings.behaviour.alignmentRadius) {
             alignmentForce.add(otherBoid.velocity);
             alignmentCount++;
           }
 
           // Cohesion
-          if (distance < settings.cohesionRadius) {
+          if (distance < settings.behaviour.cohesionRadius) {
             cohesionForce.add(otherBoid.position);
             cohesionCount++;
           }
@@ -85,20 +85,20 @@ export class Flock {
       if (separationCount > 0) {
         separationForce.divideScalar(separationCount);
         separationForce.normalize();
-        separationForce.multiplyScalar(settings.separationFactor); // Adjust separation strength
+        separationForce.multiplyScalar(settings.behaviour.separationFactor); // Adjust separation strength
       }
 
       if (alignmentCount > 0) {
         alignmentForce.divideScalar(alignmentCount);
         alignmentForce.normalize();
-        alignmentForce.multiplyScalar(settings.alignmentFactor); // Adjust alignment strength
+        alignmentForce.multiplyScalar(settings.behaviour.alignmentFactor); // Adjust alignment strength
       }
 
       if (cohesionCount > 0) {
         cohesionForce.divideScalar(cohesionCount);
         cohesionForce.sub(boid.position);
         cohesionForce.normalize();
-        cohesionForce.multiplyScalar(settings.cohesionFactor); // Adjust cohesion strength
+        cohesionForce.multiplyScalar(settings.behaviour.cohesionFactor); // Adjust cohesion strength
       }
 
       // Update boid's velocity based on forces

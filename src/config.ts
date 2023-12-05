@@ -1,5 +1,4 @@
-type Config = {
-  // behaviour factors
+type BehaviourSettings = {
   separationFactor: number,
   alignmentFactor: number,
   cohesionFactor: number,
@@ -7,6 +6,10 @@ type Config = {
   alignmentRadius: number,
   cohesionRadius: number,
   maxVelicity: number,
+}
+
+type Config = {
+  behaviour: BehaviourSettings,
   // scene settings
   numBoids: number,
   boxSize: number,
@@ -14,6 +17,7 @@ type Config = {
   boxShape: BoxShape,
   zDistance: number,
   backgroundColor: number,
+  boidColor: number,
   bloom: {
     strength: number,
     radius: number,
@@ -33,14 +37,16 @@ type PushFromCenter = {
 
 class SettingsManager {
   private default: Config = {
-    // behaviour factors
-    separationFactor: 0.005,
-    alignmentFactor: 0.002,
-    cohesionFactor: 0.003,
-    separationRadius: 0.1,
-    alignmentRadius: 0.2,
-    cohesionRadius: 0.2,
-    maxVelicity: 0.01,
+    behaviour: {
+      // behaviour factors
+      separationFactor: 0.005,
+      alignmentFactor: 0.002,
+      cohesionFactor: 0.003,
+      separationRadius: 0.1,
+      alignmentRadius: 0.2,
+      cohesionRadius: 0.2,
+      maxVelicity: 0.01,
+    },
     // scene settings
     numBoids: 500,
     boxSize: 1,
@@ -48,6 +54,7 @@ class SettingsManager {
     boxShape: "sphere",
     zDistance: 6,
     backgroundColor: 0x000000,
+    boidColor: 0xffffff,
     bloom: {
       strength: 0.5,
       radius: 0,
@@ -66,16 +73,12 @@ class SettingsManager {
     this.currentSettings = { ...this.default };
   }
 
-  public reset () {
-    // reset config to default
-    this.currentSettings.cohesionRadius = this.default.cohesionRadius;
-    this.currentSettings.separationFactor = this.default.separationFactor;
-    this.currentSettings.separationRadius = this.default.separationRadius;
-    this.currentSettings.maxVelicity = this.default.maxVelicity;
+  public resetBehaviour () {
+    this.currentSettings.behaviour = this.default.behaviour;
   }
 
   public setBehaviourMode (mode: Mode) {
-    this.reset();
+    this.resetBehaviour();
     if (this.currentMode === mode) {
       this.currentMode = null;
       console.log(`Mode ${mode} unset`)
@@ -98,23 +101,23 @@ class SettingsManager {
 
   private behaviourModeA () {
     // increase cohesion radius
-    this.currentSettings.cohesionRadius = this.default.cohesionRadius * 10;
+    this.currentSettings.behaviour.cohesionRadius = this.default.behaviour.cohesionRadius * 10;
   }
 
   private behaviourModeS () {
     // increase separation factor
-    this.currentSettings.alignmentFactor = this.default.alignmentFactor * 1.2;
+    this.currentSettings.behaviour.alignmentFactor = this.default.behaviour.alignmentFactor * 1.2;
     // increase separation radius
-    this.currentSettings.separationRadius = this.default.separationRadius * 1.2;
+    this.currentSettings.behaviour.separationRadius = this.default.behaviour.separationRadius * 1.2;
     // Make boids slower
-    this.currentSettings.maxVelicity = this.default.maxVelicity / 2;
+    this.currentSettings.behaviour.maxVelicity = this.default.behaviour.maxVelicity / 2;
   }
 
   private behaviourModeD () {
     // increase separation radius
-    this.currentSettings.separationRadius = this.default.separationRadius * 2;
+    this.currentSettings.behaviour.separationRadius = this.default.behaviour.separationRadius * 2;
     // Make boids slower
-    this.currentSettings.maxVelicity = this.default.maxVelicity * 2;
+    this.currentSettings.behaviour.maxVelicity = this.default.behaviour.maxVelicity * 2;
   }
 
   public switchBoxSize (size: "small" | "large") {
