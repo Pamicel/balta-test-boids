@@ -31,11 +31,11 @@ export class Boid {
     // // Create a white line material
     // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     // this.line = new THREE.Line(boidGeometry, boidMaterial);
-    // const boidGeometry = new THREE.CircleGeometry( 0.02, 6 );
 
-    const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
-    boidGeometry.computeVertexNormals();
-    const boidMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+    const boidGeometry = new THREE.CircleGeometry(settings.boidSize, 6);
+    // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
+    // boidGeometry.computeVertexNormals();
+    const boidMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
     this.particle = new THREE.Mesh( boidGeometry, boidMaterial );
     this.particle.position.copy(position);
     // Set this.position to be a reference to the particle's position

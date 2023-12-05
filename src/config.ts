@@ -48,7 +48,7 @@ class SettingsManager {
       radius: 0,
       threshold: 0,
     },
-    boidSize: 0.015,
+    boidSize: 0.06,
   };
   public currentSettings: Config;
   private currentMode: Mode | null = null;
