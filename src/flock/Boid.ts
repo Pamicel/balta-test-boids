@@ -5,7 +5,6 @@ import { settings } from "../config";
 export class Boid {
   public position: THREE.Vector3;
   public velocity: THREE.Vector3;
-  // private line: THREE.Line;
   private particle: THREE.Mesh;
   private scene: THREE.Scene;
 
@@ -29,8 +28,8 @@ export class Boid {
     // ]);
     // boidGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     // // Create a white line material
-    // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-    // this.line = new THREE.Line(boidGeometry, boidMaterial);
+    // const boidMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: settings.boidColor });
+    // this.particle = new THREE.Line(boidGeometry, boidMaterial);
 
     const boidGeometry = new THREE.CircleGeometry(settings.boidSize, 6);
     // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
