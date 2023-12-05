@@ -8,9 +8,15 @@ export class Boid {
   private particle: THREE.Mesh;
   private scene: THREE.Scene;
 
-  constructor({ position, scene }: { position: THREE.Vector3; scene: THREE.Scene; }) {
+  constructor({
+    position,
+    scene,
+  }: {
+    position: THREE.Vector3;
+    scene: THREE.Scene;
+  }) {
     // create random velocity
-    this.velocity =  new THREE.Vector3(
+    this.velocity = new THREE.Vector3(
       Math.random() * 2 - 1,
       Math.random() * 2 - 1,
       Math.random() * 2 - 1
@@ -34,8 +40,11 @@ export class Boid {
     const boidGeometry = new THREE.CircleGeometry(settings.flock.boidSize, 6);
     // const boidGeometry = new THREE.SphereGeometry(settings.boidSize, 6, 6);
     // boidGeometry.computeVertexNormals();
-    const boidMaterial = new THREE.MeshBasicMaterial( { color: settings.boidColor, side: THREE.DoubleSide } );
-    this.particle = new THREE.Mesh( boidGeometry, boidMaterial );
+    const boidMaterial = new THREE.MeshBasicMaterial({
+      color: settings.boidColor,
+      side: THREE.DoubleSide,
+    });
+    this.particle = new THREE.Mesh(boidGeometry, boidMaterial);
     this.particle.position.copy(position);
     // Set this.position to be a reference to the particle's position
     this.position = this.particle.position;
@@ -71,7 +80,9 @@ export class Boid {
   private limitVelocity(): void {
     // limit velocity to settings.maxVelocity
     if (this.velocity.length() > settings.flock.behaviour.maxVelicity) {
-      this.velocity.normalize().multiplyScalar(settings.flock.behaviour.maxVelicity);
+      this.velocity
+        .normalize()
+        .multiplyScalar(settings.flock.behaviour.maxVelicity);
     }
   }
 
@@ -79,8 +90,15 @@ export class Boid {
   public update(): void {
     if (settings.flock.spaceConstraints.pushFromCenter) {
       const distanceToCenter = this.position.length();
-      if (distanceToCenter < settings.flock.spaceConstraints.pushFromCenter.radius) {
-        const pushForce = this.position.clone().normalize().multiplyScalar(settings.flock.spaceConstraints.pushFromCenter.strength);
+      if (
+        distanceToCenter < settings.flock.spaceConstraints.pushFromCenter.radius
+      ) {
+        const pushForce = this.position
+          .clone()
+          .normalize()
+          .multiplyScalar(
+            settings.flock.spaceConstraints.pushFromCenter.strength
+          );
         this.applyForce(pushForce);
       }
     }

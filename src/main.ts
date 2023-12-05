@@ -7,7 +7,7 @@ const stage: Stage = new Stage();
 // Create the flock
 const flock: Flock = new Flock({
   settings: settingsManager.currentSettings.flock,
-  scene: stage.scene
+  scene: stage.scene,
 });
 
 // Animation function
@@ -55,7 +55,6 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
 
     default:
       break;
-
   }
   console.log(JSON.stringify(settings, null, 2));
 });

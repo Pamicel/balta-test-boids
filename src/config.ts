@@ -1,47 +1,47 @@
 export type FlockSettings = {
-  boidSize: number,
-  numBoids: number,
-  behaviour: BehaviourSettings,
-  spaceConstraints: SpaceConstraintsSettings,
-}
+  boidSize: number;
+  numBoids: number;
+  behaviour: BehaviourSettings;
+  spaceConstraints: SpaceConstraintsSettings;
+};
 
 type BehaviourSettings = {
-  separationFactor: number,
-  alignmentFactor: number,
-  cohesionFactor: number,
-  separationRadius: number,
-  alignmentRadius: number,
-  cohesionRadius: number,
-  maxVelicity: number,
-}
+  separationFactor: number;
+  alignmentFactor: number;
+  cohesionFactor: number;
+  separationRadius: number;
+  alignmentRadius: number;
+  cohesionRadius: number;
+  maxVelicity: number;
+};
 
 type SpaceConstraintsSettings = {
-  boxSize: number,
-  boxMode: BoxMode,
-  boxShape: BoxShape,
-  pushFromCenter: PushFromCenter | null,
-}
+  boxSize: number;
+  boxMode: BoxMode;
+  boxShape: BoxShape;
+  pushFromCenter: PushFromCenter | null;
+};
 
 type Config = {
   // global scene settings
-  cameraDistance: number,
-  backgroundColor: number,
-  boidColor: number,
+  cameraDistance: number;
+  backgroundColor: number;
+  boidColor: number;
   bloom: {
-    strength: number,
-    radius: number,
-    threshold: number,
-  },
-  flock: FlockSettings,
-}
+    strength: number;
+    radius: number;
+    threshold: number;
+  };
+  flock: FlockSettings;
+};
 
 type Mode = "a" | "s" | "d";
 type BoxMode = "wrap" | "bounce";
 type BoxShape = "sphere" | "cube";
 type PushFromCenter = {
-  radius: number,
-  strength: number,
-}
+  radius: number;
+  strength: number;
+};
 
 class SettingsManager {
   private default: Config = {
@@ -84,19 +84,19 @@ class SettingsManager {
   public currentSettings: Config;
   private currentMode: Mode | null = null;
 
-  constructor () {
+  constructor() {
     this.currentSettings = { ...this.default };
   }
 
-  public resetBehaviour () {
+  public resetBehaviour() {
     this.currentSettings.flock.behaviour = this.default.flock.behaviour;
   }
 
-  public setBehaviourMode (mode: Mode) {
+  public setBehaviourMode(mode: Mode) {
     this.resetBehaviour();
     if (this.currentMode === mode) {
       this.currentMode = null;
-      console.log(`Mode ${mode} unset`)
+      console.log(`Mode ${mode} unset`);
       return;
     }
     switch (mode) {
@@ -111,31 +111,37 @@ class SettingsManager {
         break;
     }
     this.currentMode = mode;
-    console.log(`Mode ${mode} set`)
+    console.log(`Mode ${mode} set`);
   }
 
-  private behaviourModeA () {
+  private behaviourModeA() {
     // increase cohesion radius
-    this.currentSettings.flock.behaviour.cohesionRadius = this.default.flock.behaviour.cohesionRadius * 10;
+    this.currentSettings.flock.behaviour.cohesionRadius =
+      this.default.flock.behaviour.cohesionRadius * 10;
   }
 
-  private behaviourModeS () {
+  private behaviourModeS() {
     // increase separation factor
-    this.currentSettings.flock.behaviour.alignmentFactor = this.default.flock.behaviour.alignmentFactor * 1.2;
+    this.currentSettings.flock.behaviour.alignmentFactor =
+      this.default.flock.behaviour.alignmentFactor * 1.2;
     // increase separation radius
-    this.currentSettings.flock.behaviour.separationRadius = this.default.flock.behaviour.separationRadius * 1.2;
+    this.currentSettings.flock.behaviour.separationRadius =
+      this.default.flock.behaviour.separationRadius * 1.2;
     // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelicity = this.default.flock.behaviour.maxVelicity / 2;
+    this.currentSettings.flock.behaviour.maxVelicity =
+      this.default.flock.behaviour.maxVelicity / 2;
   }
 
-  private behaviourModeD () {
+  private behaviourModeD() {
     // increase separation radius
-    this.currentSettings.flock.behaviour.separationRadius = this.default.flock.behaviour.separationRadius * 2;
+    this.currentSettings.flock.behaviour.separationRadius =
+      this.default.flock.behaviour.separationRadius * 2;
     // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelicity = this.default.flock.behaviour.maxVelicity * 2;
+    this.currentSettings.flock.behaviour.maxVelicity =
+      this.default.flock.behaviour.maxVelicity * 2;
   }
 
-  public switchBoxSize (size: "small" | "large") {
+  public switchBoxSize(size: "small" | "large") {
     const smallBoxSize = 1;
     const largeBoxSize = 4;
     if (size === "large") {
@@ -145,15 +151,15 @@ class SettingsManager {
     }
   }
 
-  public setBoxMode (mode: BoxMode) {
+  public setBoxMode(mode: BoxMode) {
     this.currentSettings.flock.spaceConstraints.boxMode = mode;
   }
 
-  public setBoxShape (shape: BoxShape) {
+  public setBoxShape(shape: BoxShape) {
     this.currentSettings.flock.spaceConstraints.boxShape = shape;
   }
 
-  private changeCameraDistance (delta: number) {
+  private changeCameraDistance(delta: number) {
     // no closer than 1
     if (this.currentSettings.cameraDistance + delta < 1) {
       return;
@@ -161,41 +167,41 @@ class SettingsManager {
     this.currentSettings.cameraDistance += delta;
   }
 
-  public zoomIn () {
+  public zoomIn() {
     this.changeCameraDistance(-1);
   }
 
-  public zoomOut () {
+  public zoomOut() {
     this.changeCameraDistance(1);
   }
 
-  private get boidSize () {
+  private get boidSize() {
     return this.currentSettings.flock.boidSize;
   }
 
-  private set boidSize (size: number) {
+  private set boidSize(size: number) {
     if (size < 0.005) {
       return;
     }
     this.currentSettings.flock.boidSize = size;
   }
 
-  public increaseBoidSize () {
+  public increaseBoidSize() {
     this.boidSize += 0.002;
   }
 
-  public decreaseBoidSize () {
+  public decreaseBoidSize() {
     this.boidSize -= 0.002;
   }
 
-  public increaseCenterSize () {
+  public increaseCenterSize() {
     if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
       return;
     }
     this.currentSettings.flock.spaceConstraints.pushFromCenter.radius += 0.1;
   }
 
-  public decreaseCenterSize () {
+  public decreaseCenterSize() {
     if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
       return;
     }

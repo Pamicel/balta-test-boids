@@ -8,17 +8,17 @@ export class Flock {
 
   constructor({
     settings,
-    scene
+    scene,
   }: {
     settings: FlockSettings;
     scene: THREE.Scene;
   }) {
     this.settings = { ...settings };
-    this.addBoids(settings.numBoids, scene)
+    this.addBoids(settings.numBoids, scene);
   }
 
   public refreshAppearance(): void {
-    this.boids.forEach(boid => boid.refreshAppearance());
+    this.boids.forEach((boid) => boid.refreshAppearance());
   }
 
   public addBoids(n: number, scene: THREE.Scene): void {
@@ -94,7 +94,9 @@ export class Flock {
       if (separationCount > 0) {
         separationForce.divideScalar(separationCount);
         separationForce.normalize();
-        separationForce.multiplyScalar(this.settings.behaviour.separationFactor); // Adjust separation strength
+        separationForce.multiplyScalar(
+          this.settings.behaviour.separationFactor
+        ); // Adjust separation strength
       }
 
       if (alignmentCount > 0) {
