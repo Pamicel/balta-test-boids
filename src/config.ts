@@ -45,7 +45,7 @@ type PushFromCenter = {
 class SettingsManager {
   private default: Config = {
     // global scene settings
-    cameraDistance: 6,
+    cameraDistance: 12,
     backgroundColor: 0x000000,
     boidColor: 0xffffff,
     bloom: {

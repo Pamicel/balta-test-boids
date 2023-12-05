@@ -17,48 +17,79 @@ const flockA: Flock = new Flock({
   spaceConstraints: settings.flock.spaceConstraints,
 });
 
+const flockB: Flock = new Flock({
+  name: "Secondary Flock",
+  numBoids: settings.flock.numBoids,
+  boidAppearance: {
+    color: settings.boidColor,
+    size: settings.flock.boidSize,
+  },
+  scene: stage.scene,
+  behaviour: settings.flock.behaviour,
+  spaceConstraints: {
+    boxSize: 4,
+    boxMode: "wrap",
+    boxShape: "sphere",
+    pushFromCenter: {
+      radius: 3,
+      strength: 0.001,
+    },
+  },
+});
+
 // Animation function
 function animate(): void {
   requestAnimationFrame(animate);
   flockA.update();
+  flockB.update();
   stage.render();
 }
 
+let selectedFlock = flockA;
+const chooseFlock = (choice: "1" | "2") => {
+  if (choice === "1") {
+    selectedFlock = flockA;
+  } else if (choice === "2") {
+    selectedFlock = flockB;
+  }
+  console.log(`Switched to flock "${selectedFlock.name}`);
+};
+
 // Keypress event listener
 document.addEventListener("keydown", (event: KeyboardEvent) => {
-  const flock = flockA;
   switch (event.key) {
+    case "1":
+    case "2":
+      chooseFlock(event.key);
+      break;
     case "ArrowUp":
-      flock.settings.increaseCenterSize();
+      selectedFlock.settings.increaseCenterSize();
       break;
     case "ArrowDown":
-      flock.settings.decreaseCenterSize();
+      selectedFlock.settings.decreaseCenterSize();
       break;
     case "ArrowLeft":
-      flock.settings.switchBoxSize("small");
+      selectedFlock.settings.switchBoxSize("small");
       break;
     case "ArrowRight":
-      flock.settings.switchBoxSize("large");
+      selectedFlock.settings.switchBoxSize("large");
       break;
 
     case "a":
     case "s":
     case "d":
-      flock.settings.setBehaviourMode(event.key);
+      selectedFlock.settings.setBehaviourMode(event.key);
       break;
 
     case "w":
-      flock.settings.swtichBoxMode();
+      selectedFlock.settings.swtichBoxMode();
       break;
-    // case "q":
-    //   flock.settings.switchBoxShape();
-    //   break;
 
     default:
       break;
   }
   // console.log(JSON.stringify(settings, null, 2));
-  flock.settings.log();
+  selectedFlock.settings.log();
 });
 
 // window resize event listener
@@ -74,6 +105,7 @@ window.addEventListener("wheel", (event: WheelEvent) => {
     settingsManager.zoomOut();
   }
   stage.refresh();
+  console.log(`Camera distance: ${settings.cameraDistance}`);
 });
 
 // Start the animation loop

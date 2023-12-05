@@ -32,7 +32,12 @@ export class FlockSettings {
     this.behaviour = { ...behaviourSettings };
     this.defaultBehaviour = { ...behaviourSettings };
     this.boidAppearance = { ...boidAppearance };
-    this.spaceConstraints = { ...spaceConstraints };
+    this.spaceConstraints = {
+      ...spaceConstraints,
+      pushFromCenter: spaceConstraints.pushFromCenter
+        ? { ...spaceConstraints.pushFromCenter }
+        : null,
+    };
   }
 
   public logBehaviour() {
