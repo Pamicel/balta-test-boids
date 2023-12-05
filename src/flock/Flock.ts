@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Boid } from "./Boid";
 import { BehaviourSettings, SpaceConstraintsSettings } from "../config";
+import { FlockSettings } from "./FlockSettings";
 
 type BoidAppearance = {
   color: number;
@@ -8,44 +9,40 @@ type BoidAppearance = {
 };
 
 export class Flock {
+  public name: string;
   public boids: Boid[] = [];
-  private behaviourSettings: BehaviourSettings;
-  private boidAppearance: BoidAppearance;
-  private spaceConstraints: SpaceConstraintsSettings;
+  public settings: FlockSettings;
 
   constructor({
+    name,
     numBoids,
     boidAppearance,
     spaceConstraints,
     behaviour,
     scene,
   }: {
+    name: string;
     numBoids: number;
     boidAppearance: BoidAppearance;
     spaceConstraints: SpaceConstraintsSettings;
     behaviour: BehaviourSettings;
     scene: THREE.Scene;
   }) {
-    this.behaviourSettings = { ...behaviour };
-    this.boidAppearance = { ...boidAppearance };
-    this.spaceConstraints = { ...spaceConstraints };
+    this.name = name;
+    this.settings = new FlockSettings({
+      flock: this,
+      behaviourSettings: behaviour,
+      boidAppearance,
+      spaceConstraints,
+    });
     this.addBoids(numBoids, scene);
   }
 
-  public changeBehaviour(behaviour: BehaviourSettings) {
-    this.behaviourSettings = { ...behaviour };
-  }
-
-  public changeSpaceConstraints(spaceConstraints: SpaceConstraintsSettings) {
-    this.spaceConstraints = { ...spaceConstraints };
-  }
-
-  public changeBoidsAppearance(boidSettings: BoidAppearance) {
-    this.boidAppearance = { ...boidSettings };
+  public refreshBoidsAppearance(boidSettings: BoidAppearance) {
     this.boids.forEach((boid) =>
       boid.changeAppearance({
-        color: this.boidAppearance.color,
-        size: this.boidAppearance.size,
+        color: this.settings.boidAppearance.color,
+        size: this.settings.boidAppearance.size,
       })
     );
   }
@@ -59,8 +56,7 @@ export class Flock {
       const boid: Boid = new Boid({
         position,
         scene,
-        color: this.boidAppearance.color,
-        size: this.boidAppearance.size,
+        flock: this,
       });
       this.boids.push(boid);
     }
@@ -93,7 +89,7 @@ export class Flock {
         alignmentFactor,
         cohesionFactor,
         maxVelocity,
-      } = this.behaviourSettings;
+      } = this.settings.behaviour;
 
       for (const otherBoid of this.boids) {
         if (otherBoid !== boid) {
@@ -159,10 +155,7 @@ export class Flock {
       boid.applyForce(alignmentForce);
       boid.applyForce(cohesionForce);
       // Update boid's position based on velocity
-      boid.update({
-        space: this.spaceConstraints,
-        maxVelocity,
-      });
+      boid.update();
     }
   }
 }

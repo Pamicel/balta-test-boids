@@ -5,7 +5,8 @@ import { Flock } from "./flock/Flock";
 // Create the scene
 const stage: Stage = new Stage();
 // Create the flock
-const flock: Flock = new Flock({
+const flockA: Flock = new Flock({
+  name: "Main Flock",
   numBoids: settings.flock.numBoids,
   boidAppearance: {
     color: settings.boidColor,
@@ -19,50 +20,45 @@ const flock: Flock = new Flock({
 // Animation function
 function animate(): void {
   requestAnimationFrame(animate);
-  flock.update();
+  flockA.update();
   stage.render();
 }
 
 // Keypress event listener
 document.addEventListener("keydown", (event: KeyboardEvent) => {
+  const flock = flockA;
   switch (event.key) {
     case "ArrowUp":
-      settingsManager.increaseCenterSize();
+      flock.settings.increaseCenterSize();
       break;
     case "ArrowDown":
-      settingsManager.decreaseCenterSize();
+      flock.settings.decreaseCenterSize();
       break;
     case "ArrowLeft":
-      settingsManager.switchBoxSize("small");
+      flock.settings.switchBoxSize("small");
       break;
     case "ArrowRight":
-      settingsManager.switchBoxSize("large");
+      flock.settings.switchBoxSize("large");
       break;
 
     case "a":
     case "s":
     case "d":
-      settingsManager.setBehaviourMode(event.key);
+      flock.settings.setBehaviourMode(event.key);
       break;
 
-    case "1":
-      settingsManager.setBoxMode("wrap");
-      break;
-    case "2":
-      settingsManager.setBoxMode("bounce");
-      break;
-
-    case "q":
-      settingsManager.setBoxShape("cube");
-      break;
     case "w":
-      settingsManager.setBoxShape("sphere");
+      flock.settings.swtichBoxMode();
       break;
+    // case "q":
+    //   flock.settings.switchBoxShape();
+    //   break;
 
     default:
       break;
   }
-  console.log(JSON.stringify(settings, null, 2));
+  // console.log(JSON.stringify(settings, null, 2));
+  flock.settings.log();
 });
 
 // window resize event listener

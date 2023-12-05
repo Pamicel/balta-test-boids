@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { SpaceConstraintsSettings } from "../config";
+import { Flock } from "./Flock";
 
 // Boid class
 export class Boid {
@@ -7,17 +8,16 @@ export class Boid {
   public velocity: THREE.Vector3;
   private particle: THREE.Mesh;
   private scene: THREE.Scene;
+  private flock: Flock;
 
   constructor({
     position,
     scene,
-    color,
-    size,
+    flock,
   }: {
     position: THREE.Vector3;
     scene: THREE.Scene;
-    color: number;
-    size: number;
+    flock: Flock;
   }) {
     // create random velocity
     this.velocity = new THREE.Vector3(
@@ -26,6 +26,8 @@ export class Boid {
       Math.random() * 2 - 1
     );
     this.scene = scene;
+    this.flock = flock;
+    const { color, size } = this.flock.settings.boidAppearance;
     this.createParticle({ position, color, size });
   }
 
@@ -95,7 +97,8 @@ export class Boid {
     this.velocity.add(force);
   }
 
-  private limitVelocity(maxVelocity: number): void {
+  private limitVelocity(): void {
+    const maxVelocity = this.flock.settings.behaviour.maxVelocity;
     // limit velocity to settings.maxVelocity
     if (this.velocity.length() > maxVelocity) {
       this.velocity.normalize().multiplyScalar(maxVelocity);
@@ -103,25 +106,23 @@ export class Boid {
   }
 
   // Update the boid's position
-  public update(constraints: {
-    space: SpaceConstraintsSettings;
-    maxVelocity: number;
-  }): void {
-    if (constraints.space.pushFromCenter) {
+  public update(): void {
+    const { spaceConstraints } = this.flock.settings;
+    if (spaceConstraints.pushFromCenter) {
       const distanceToCenter = this.position.length();
-      if (distanceToCenter < constraints.space.pushFromCenter.radius) {
+      if (distanceToCenter < spaceConstraints.pushFromCenter.radius) {
         const pushForce = this.position
           .clone()
           .normalize()
-          .multiplyScalar(constraints.space.pushFromCenter.strength);
+          .multiplyScalar(spaceConstraints.pushFromCenter.strength);
         this.applyForce(pushForce);
       }
     }
 
-    this.limitVelocity(constraints.maxVelocity);
+    this.limitVelocity();
     this.position.add(this.velocity);
 
-    const { boxSize, boxShape, boxMode } = constraints.space;
+    const { boxSize, boxShape, boxMode } = spaceConstraints;
     if (boxShape === "cube" && boxMode === "wrap") {
       // jump to the other side of the scene when boid reaches the edge
       if (this.position.x > boxSize) {

@@ -35,7 +35,6 @@ type Config = {
   flock: FlockSettings;
 };
 
-type Mode = "a" | "s" | "d";
 type BoxMode = "wrap" | "bounce";
 type BoxShape = "sphere" | "cube";
 type PushFromCenter = {
@@ -82,81 +81,9 @@ class SettingsManager {
     },
   };
   public currentSettings: Config;
-  private currentMode: Mode | null = null;
 
   constructor() {
     this.currentSettings = { ...this.default };
-  }
-
-  public resetBehaviour() {
-    this.currentSettings.flock.behaviour = this.default.flock.behaviour;
-  }
-
-  public setBehaviourMode(mode: Mode) {
-    this.resetBehaviour();
-    if (this.currentMode === mode) {
-      this.currentMode = null;
-      console.log(`Mode ${mode} unset`);
-      return;
-    }
-    switch (mode) {
-      case "a":
-        this.behaviourModeA();
-        break;
-      case "s":
-        this.behaviourModeS();
-        break;
-      case "d":
-        this.behaviourModeD();
-        break;
-    }
-    this.currentMode = mode;
-    console.log(`Mode ${mode} set`);
-  }
-
-  private behaviourModeA() {
-    // increase cohesion radius
-    this.currentSettings.flock.behaviour.cohesionRadius =
-      this.default.flock.behaviour.cohesionRadius * 10;
-  }
-
-  private behaviourModeS() {
-    // increase separation factor
-    this.currentSettings.flock.behaviour.alignmentFactor =
-      this.default.flock.behaviour.alignmentFactor * 1.2;
-    // increase separation radius
-    this.currentSettings.flock.behaviour.separationRadius =
-      this.default.flock.behaviour.separationRadius * 1.2;
-    // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelocity =
-      this.default.flock.behaviour.maxVelocity / 2;
-  }
-
-  private behaviourModeD() {
-    // increase separation radius
-    this.currentSettings.flock.behaviour.separationRadius =
-      this.default.flock.behaviour.separationRadius * 2;
-    // Make boids slower
-    this.currentSettings.flock.behaviour.maxVelocity =
-      this.default.flock.behaviour.maxVelocity * 2;
-  }
-
-  public switchBoxSize(size: "small" | "large") {
-    const smallBoxSize = 1;
-    const largeBoxSize = 4;
-    if (size === "large") {
-      this.currentSettings.flock.spaceConstraints.boxSize = largeBoxSize;
-    } else {
-      this.currentSettings.flock.spaceConstraints.boxSize = smallBoxSize;
-    }
-  }
-
-  public setBoxMode(mode: BoxMode) {
-    this.currentSettings.flock.spaceConstraints.boxMode = mode;
-  }
-
-  public setBoxShape(shape: BoxShape) {
-    this.currentSettings.flock.spaceConstraints.boxShape = shape;
   }
 
   private changeCameraDistance(delta: number) {
@@ -173,39 +100,6 @@ class SettingsManager {
 
   public zoomOut() {
     this.changeCameraDistance(1);
-  }
-
-  private get boidSize() {
-    return this.currentSettings.flock.boidSize;
-  }
-
-  private set boidSize(size: number) {
-    if (size < 0.005) {
-      return;
-    }
-    this.currentSettings.flock.boidSize = size;
-  }
-
-  public increaseBoidSize() {
-    this.boidSize += 0.002;
-  }
-
-  public decreaseBoidSize() {
-    this.boidSize -= 0.002;
-  }
-
-  public increaseCenterSize() {
-    if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
-      return;
-    }
-    this.currentSettings.flock.spaceConstraints.pushFromCenter.radius += 0.1;
-  }
-
-  public decreaseCenterSize() {
-    if (!this.currentSettings.flock.spaceConstraints.pushFromCenter) {
-      return;
-    }
-    this.currentSettings.flock.spaceConstraints.pushFromCenter.radius -= 0.1;
   }
 }
 
