@@ -27,11 +27,13 @@ const flockB: Flock = new Flock({
   scene: stage.scene,
   behaviour: settings.flock.behaviour,
   spaceConstraints: {
+    maxBoxSize: 4,
+    minBoxSize: 1,
     boxSize: 4,
     boxMode: "wrap",
     boxShape: "sphere",
     pushFromCenter: {
-      radius: 3,
+      radius: 0,
       strength: 0.001,
     },
   },
@@ -69,10 +71,10 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
       selectedFlock.settings.decreaseCenterSize();
       break;
     case "ArrowLeft":
-      selectedFlock.settings.switchBoxSize("small");
+      selectedFlock.settings.decreaseBoxSize();
       break;
     case "ArrowRight":
-      selectedFlock.settings.switchBoxSize("large");
+      selectedFlock.settings.increaseBoxSize();
       break;
 
     case "a":

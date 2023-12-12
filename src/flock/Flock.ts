@@ -49,9 +49,13 @@ export class Flock {
 
   public addBoids(n: number, scene: THREE.Scene): void {
     for (let i = 0; i < n; i++) {
-      const x: number = Math.random() * 2 - 1;
-      const y: number = Math.random() * 2 - 1;
-      const z: number = Math.random() * 2 - 1;
+      // position randomly in a sphere
+      const r: number = Math.random() * 2 - 1;
+      const theta: number = Math.random() * Math.PI * 2;
+      const phi: number = Math.random() * Math.PI * 2;
+      const x: number = r * Math.sin(theta) * Math.cos(phi);
+      const y: number = r * Math.sin(theta) * Math.sin(phi);
+      const z: number = r * Math.cos(theta);
       const position = new THREE.Vector3(x, y, z);
       const boid: Boid = new Boid({
         position,

@@ -78,13 +78,25 @@ export class FlockSettings {
     }
   }
 
+  public decreaseBoxSize(): void {
+    if (this.spaceConstraints.boxSize <= this.spaceConstraints.minBoxSize) {
+      return;
+    }
+    this.spaceConstraints.boxSize -= 0.1;
+  }
+
+  public increaseBoxSize(): void {
+    if (this.spaceConstraints.boxSize >= this.spaceConstraints.maxBoxSize) {
+      return;
+    }
+    this.spaceConstraints.boxSize += 0.1;
+  }
+
   public switchBoxSize(size: "small" | "large") {
-    const smallBoxSize = 1;
-    const largeBoxSize = 4;
     if (size === "large") {
-      this.spaceConstraints.boxSize = largeBoxSize;
+      this.spaceConstraints.boxSize = this.spaceConstraints.maxBoxSize;
     } else {
-      this.spaceConstraints.boxSize = smallBoxSize;
+      this.spaceConstraints.boxSize = this.spaceConstraints.minBoxSize;
     }
   }
 

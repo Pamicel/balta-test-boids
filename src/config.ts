@@ -16,6 +16,8 @@ export type BehaviourSettings = {
 };
 
 export type SpaceConstraintsSettings = {
+  maxBoxSize: number;
+  minBoxSize: number;
   boxSize: number;
   boxMode: BoxMode;
   boxShape: BoxShape;
@@ -70,6 +72,8 @@ class SettingsManager {
       },
       // space constraints settings
       spaceConstraints: {
+        maxBoxSize: 4,
+        minBoxSize: 1,
         boxSize: 1,
         boxMode: "wrap",
         boxShape: "sphere",
