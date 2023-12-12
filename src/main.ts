@@ -16,6 +16,8 @@ const flockA: Flock = new Flock({
   behaviour: settings.flock.behaviour,
   spaceConstraints: settings.flock.spaceConstraints,
 });
+flockA.settings.setBehaviourMode("d");
+flockA.settings.setBoxMode("bounce");
 
 const flockB: Flock = new Flock({
   name: "Secondary Flock",
@@ -57,6 +59,16 @@ const chooseFlock = (choice: "1" | "2") => {
   console.log(`Switched to flock "${selectedFlock.name}`);
 };
 
+const hideFlock = (flock: Flock) => {
+  flock.removeBoids(flock.boids.length);
+};
+
+const showFlock = (flock: Flock) => {
+  if (flock.boids.length === 0) {
+    flock.addBoids(settings.flock.numBoids, stage.scene);
+  }
+};
+
 // Keypress event listener
 document.addEventListener("keydown", (event: KeyboardEvent) => {
   switch (event.key) {
@@ -75,6 +87,12 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
       break;
     case "ArrowRight":
       selectedFlock.settings.increaseBoxSize();
+      break;
+    case "Backspace":
+      hideFlock(selectedFlock);
+      break;
+    case "Enter":
+      showFlock(selectedFlock);
       break;
 
     case "a":

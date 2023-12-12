@@ -38,7 +38,7 @@ export class Flock {
     this.addBoids(numBoids, scene);
   }
 
-  public refreshBoidsAppearance(boidSettings: BoidAppearance) {
+  public refreshBoidsAppearance() {
     this.boids.forEach((boid) =>
       boid.changeAppearance({
         color: this.settings.boidAppearance.color,
@@ -50,7 +50,8 @@ export class Flock {
   public addBoids(n: number, scene: THREE.Scene): void {
     for (let i = 0; i < n; i++) {
       // position randomly in a sphere
-      const r: number = Math.random() * 2 - 1;
+      const r: number =
+        (Math.random() * 2 - 1) * this.settings.spaceConstraints.boxSize;
       const theta: number = Math.random() * Math.PI * 2;
       const phi: number = Math.random() * Math.PI * 2;
       const x: number = r * Math.sin(theta) * Math.cos(phi);
@@ -92,7 +93,6 @@ export class Flock {
         separationFactor,
         alignmentFactor,
         cohesionFactor,
-        maxVelocity,
       } = this.settings.behaviour;
 
       for (const otherBoid of this.boids) {
