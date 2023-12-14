@@ -30,6 +30,14 @@ export class Stage {
     this.camera.position.z = distance;
   }
 
+  private rotateCamera() {
+    this.camera.position.x =
+      Math.sin(Date.now() / 10000) * settings.cameraDistance;
+    this.camera.position.z =
+      Math.cos(Date.now() / 10000) * settings.cameraDistance;
+    this.camera.lookAt(0, 0, 0);
+  }
+
   public refresh(): void {
     this.cameraDistance = settings.cameraDistance;
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -54,6 +62,7 @@ export class Stage {
   }
 
   public render(): void {
+    this.rotateCamera();
     this.composer.render();
   }
 }
